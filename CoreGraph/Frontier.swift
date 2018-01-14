@@ -12,7 +12,6 @@ import Foundation
 
 class Frontier<N: Equatable> {
 	var paths: [Path<N>] = []
-	
 }
 
 // MARK: - Public methods and properties
@@ -27,27 +26,46 @@ extension Frontier {
 	
 	func getBestPath() -> Result<Path<N>> {
 		guard !isEmpty else { return .unexpected(.frontierIsEmpty) }
-		
-		var bestPath = paths.first!
-		for path in paths {
-			if path < bestPath {
-				bestPath = path
-			}
-		}		
-		
-		return .expected(bestPath)
+
+		return .expected(paths[0])
 	}
 	
 	func add(_ path: Path<N>) {
 		paths.append(path)
+		
+		var childIndex: Float = Float(paths.count) - 1
+		var parentIndex: Int! = 0
+		
+		//calculate parent index
+		if childIndex != 0 {
+			parentIndex = Int(floorf((childIndex - 1) / 2))
+		}
+		
+		var childToUse: Path<N>
+		var parentToUse: Path<N>
+		
+		//use the bottom-up approach
+		while childIndex != 0 {
+			childToUse = paths[Int(childIndex)]
+			parentToUse = paths[parentIndex]
+
+			//swap child and parent positions
+			if childToUse.total < parentToUse.total {
+				swap(&paths[parentIndex], &paths[Int(childIndex)])
+			}
+			
+			//reset indices
+			childIndex = Float(parentIndex)
+			if (childIndex != 0) {
+				parentIndex = Int(floorf((childIndex - 1) / 2))
+			}
+		}
 	}
 	
 	@discardableResult func remove(_ path: Path<N>) -> Result<Int> {
 		return paths.remove(object: path)
 	}
 }
-
-
 
 
 extension Frontier {
