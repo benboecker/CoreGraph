@@ -10,12 +10,12 @@ import Foundation
 
 
 
-enum GraphError: Error {
+public enum GraphError: Error {
 	case nodeAlreadyExists
 	case shortestPathNotFound
 	case startingPOINotFound
 	case destinationPOINotFound
-	case bestPathNotFound
 	case frontierIsEmpty
 	case elementNotRemoved
+	case edgeNotFound
 }

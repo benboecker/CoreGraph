@@ -11,14 +11,18 @@ import Foundation
 /**
 This struct represents the graph used for calculating the shortest path between nodes.
 */
-struct Graph<N: Equatable> {
+public struct Graph<N: Equatable> {
 	/// Stores the nodes that build the graph
-	fileprivate(set) var nodes: [Node<N>] = []
+	private(set) var nodes: [Node<N>] = []
+	
+	public init() {
+		
+	}
 }
 
 
 // MARK: - Public methods
-extension Graph {
+public extension Graph {
 	/**
 	Adds a new `Node` object to the node array, containing the value passed in `with`.
 	If a `Node` with the given value already exists, this function returns nil.
@@ -26,13 +30,13 @@ extension Graph {
 	- Parameter with: The value that will be stored in the new `Node`.
 	- Returns: A Result object containing either the newly created `Node` or an error that the node already exists.
 	*/
-	@discardableResult mutating func addNode(with value: N) -> Result<Node<N>> {
+	@discardableResult mutating func addNode(with value: N) -> Result<N> {
 		guard !hasNode(with: value) else { return .unexpected(.nodeAlreadyExists) }
 		
 		let node = Node<N>(with: value)
 		nodes.append(node)
 		
-		return .expected(node)
+		return .expected(value)
 	}
 	
 	/**
@@ -48,7 +52,7 @@ extension Graph {
 	mutating func addEdge(from source: N, to destination: N, weight: Double) {
 		guard let sourceNode = self[source],
 			let destinationNode = self[destination],
-			!sourceNode.hasEdge(to: destinationNode)
+			!sourceNode.hasEdge(to: destinationNode.value)
 			else {
 				return
 		}
@@ -72,13 +76,13 @@ extension Graph {
 		}
 		
 		/// Represents the frontier. It is contains all paths along the graph.
-		let frontier: Frontier<N> = .init()
+		let frontier = Frontier<N>()
 
 		let startingPath: Frontier<N>.Path<N> = Frontier.Path(destination: source)
 		startingPath.total = 0
 		
 		// Contains all paths that are shortest to the destination node of the path
-		var finalPaths = [Frontier<N>.Path<N>]()
+		let finalPaths = Frontier<N>()
 		
 		// Buildung the starting frontier
 		for edge in source.edges {
@@ -90,13 +94,10 @@ extension Graph {
 		
 		// Calculate paths to all nodes while the frontier is not empty
 		while !frontier.isEmpty {
-			// Finding the current best path, which is the first one.
-			let bestPathResult = frontier.getBestPath()
-			guard let bestPath = bestPathResult.data else {
-				continue
-			}
+			// Finding the current best path, which can't be nil.
+			let bestPath = frontier.getBestPath().data!
 			
-			// Removing the best path since it will be added to the final paths.
+			// Removing the best path since it will be added to the final paths if it reaches the destination.
 			// This way, the frontier eventually gets smaller and smaller.
 			frontier.remove(bestPath)
 			
@@ -110,32 +111,17 @@ extension Graph {
 				newPath.previous = bestPath
 				newPath.total = bestPath.total + edge.weight
 				
-				// Checking if the new path is shorter than the next one in the frontier.
-				// If it is, it will be the next best path in the next iteration over the frontier.
-//				if let first = frontier.first, newPath.total < first.total {
-//					frontier.insert(newPath, at: 0)
-//				} else {
-//					frontier.append(newPath)
-//				}
-				
 				frontier.add(newPath)
 			}
 			
-			// Adding best path to final paths
-			finalPaths.append(bestPath)
-			
-			// As soon as the destination is found, the algorithm stops
+			// When the destination is reached, the current best path is added to the final paths array.
 			if bestPath.destination == destination {
-				frontier.removeAllPaths()
+				finalPaths.add(bestPath)
 			}
 		}
 		
 		// Getting the path to the destination node with the lowest total weight
-		let path = finalPaths.filter {
-			return $0.destination.value == to
-			}.sorted { $0.total < $1.total }.first
-		
-		if let path = path, let route = Route(path: path) {			
+		if let path = finalPaths.getBestPath().data, let route = Route(path: path) {
 			return .expected(route)
 		} else {
 			return .unexpected(.shortestPathNotFound)
@@ -148,11 +134,14 @@ extension Graph {
 	mutating func clear() {
 		nodes.removeAll()
 	}
+}
 
+// MARK: - Internal Methods
+extension Graph {
 	/**
 	Checks if this graph contains a node that stores the given value.
 	This is needed to make sure only unique values are stored in the graph.
-
+	
 	- Parameter with: A value to check for.
 	- Returns: A `Bool` indicating whether the graph has a `Node` that contains the given value.
 	*/
@@ -178,7 +167,7 @@ extension Graph {
 
 
 extension Graph: CustomStringConvertible {
-	var description: String {
+	public var description: String {
 		var result = ""
 		
 		for node in nodes {

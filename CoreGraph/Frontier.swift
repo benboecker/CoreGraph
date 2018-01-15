@@ -33,12 +33,12 @@ extension Frontier {
 	func add(_ path: Path<N>) {
 		paths.append(path)
 		
-		var childIndex: Float = Float(paths.count) - 1
+		var childIndex = paths.count - 1
 		var parentIndex: Int! = 0
 		
 		//calculate parent index
 		if childIndex != 0 {
-			parentIndex = Int(floorf((childIndex - 1) / 2))
+			parentIndex = (childIndex - 1) / 2
 		}
 		
 		var childToUse: Path<N>
@@ -46,18 +46,18 @@ extension Frontier {
 		
 		//use the bottom-up approach
 		while childIndex != 0 {
-			childToUse = paths[Int(childIndex)]
+			childToUse = paths[childIndex]
 			parentToUse = paths[parentIndex]
 
 			//swap child and parent positions
 			if childToUse.total < parentToUse.total {
-				swap(&paths[parentIndex], &paths[Int(childIndex)])
+				(paths[parentIndex], paths[childIndex]) = (paths[childIndex], paths[parentIndex])
 			}
 			
 			//reset indices
-			childIndex = Float(parentIndex)
+			childIndex = parentIndex
 			if (childIndex != 0) {
-				parentIndex = Int(floorf((childIndex - 1) / 2))
+				parentIndex = (childIndex - 1) / 2
 			}
 		}
 	}
@@ -70,7 +70,9 @@ extension Frontier {
 
 extension Frontier {
 	class Path<N: Equatable> {
-		/// The total weight of this path. Default value is `infinity` for calculating the shortest path in the dijkstra algorithm (The best path is always shorter than infinity).
+	
+		/// The total weight of this path. Default value is `infinity` for calculating the shortest path
+		// in the dijkstra algorithm (The best path is always shorter than infinity).
 		var total: Double = Double.infinity
 		/// The destination `Node` of the path.
 		var destination: Node<N>
@@ -87,16 +89,20 @@ extension Frontier {
 				p = current
 			}
 			
-			return result.reversed()
+			return result
 		}
 		
 		/**
 		Initializer that takes a node object and sets it as the destination.
 		
-		- Parameter destination: The `Node` object that will become the destination of this path. Defaults to a new `Node` object.
+		- Parameter destination: The `Node` object that will become the destination
+		of this path. Defaults to a new `Node` object.
+		- Parameter previous: The `Path` object that precedes this path part.
+		Defaults to nil, which is the end of the path.
 		*/
-		init (destination: Node<N>) {
+		init (destination: Node<N>, previous: Path<N>? = nil) {
 			self.destination = destination
+			self.previous = previous
 		}
 		
 		/**
@@ -115,15 +121,35 @@ extension Frontier {
 	}
 }
 
+// MARK: - Frontier CustomStringConvertible
+extension Frontier: CustomStringConvertible {
+	var description: String {
+		return paths.map { "\($0)" }.joined(separator: "\n")
+	}
+}
+
+// MARK: - Frontier.Path CustomStringConvertible
+extension Frontier.Path: CustomStringConvertible {
+	var description: String {
+		guard let p = previous else {
+			return "[\(destination.value)]"
+		}
+		
+		return "[\(destination.value)] — \(String(describing: p))"
+	}
+}
+
+// MARK: - Frontier.Path Equatable
 extension Frontier.Path: Equatable {
 	static func ==(left: Frontier.Path<N>, right: Frontier.Path<N>) -> Bool {
 		return left.total == right.total && left.destination == right.destination
 	}
 }
 
-
+// MARK: - Frontier.Path Comparable
 extension Frontier.Path: Comparable {
 	static func < (left: Frontier.Path<N>, right: Frontier.Path<N>) -> Bool {
 		return left.total < right.total
 	}
 }
+

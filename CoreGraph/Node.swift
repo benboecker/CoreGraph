@@ -47,17 +47,36 @@ extension Node {
 		destination.edges.append(reversedEdge)
 	}
 	
-	/**
-	Checks if the node has a connection to another given `Node`.
- 
-	- Parameter to: The `Node` to which the connection should be checked
-	- Returns: A Bool that indicates if the node has an edge to the given node
-	*/
-	func hasEdge(to node: Node) -> Bool {
-		return edges.filter { return $0.destination == node }.count > 0
-	}
+	
 }
 
+// MARK: - Internal methods
+extension Node {
+	/**
+	Checks if the node has a connection to another given `Node`.
+	
+	- Parameter to: The `Node` to which the connection should be checked.
+	- Returns: A Bool that indicates if the node has an edge to the given node.
+	*/
+	func hasEdge(to node: N) -> Bool {
+		return edges.filter { return $0.destination.value == node }.count > 0
+	}
+	
+	/**
+	Gets the specific connection to another `Node` object, if it has any.
+	
+	- Parameter to: The `Node` to which the connection should be serached for.
+	- Returns: A `Result` value containing either the expected `Edge` object or an unexpected `GraphError`.
+	*/
+	func edge(to node: Node<N>) -> Result<Edge<N>> {
+		guard hasEdge(to: node.value),
+			let edge = edges.filter({ $0.destination == node }).first else {
+				return .unexpected(.edgeNotFound)
+		}
+		
+		return .expected(edge)
+	}
+}
 
 // MARK: - CustomStringConvertible
 extension Node: CustomStringConvertible {

@@ -12,8 +12,7 @@ import XCTest
 
 
 class ResultTests: XCTestCase {
-	
-	
+
 	func testExpectedResult() {
 		let result = Result.expected("Test")
 		

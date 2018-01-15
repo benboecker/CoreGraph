@@ -29,9 +29,28 @@ class NodeTests: XCTestCase {
 		nodeA.addEdge(to: nodeB, weight: 2)
 		nodeA.addEdge(to: nodeC, weight: 3)
 		
-		XCTAssertTrue(nodeA.hasEdge(to: nodeB))
-		XCTAssertTrue(nodeA.hasEdge(to: nodeC))
-		XCTAssertFalse(nodeB.hasEdge(to: nodeC))
+		XCTAssertTrue(nodeA.hasEdge(to: 3))
+		XCTAssertTrue(nodeA.hasEdge(to: 4))
+		XCTAssertFalse(nodeB.hasEdge(to: 4))
+	}
+	
+	func testGetEdgeToAnotherNode() {
+		let nodeA = Node(with: 2)
+		let nodeB = Node(with: 3)
+		let nodeC = Node(with: 4)
+		
+		nodeA.addEdge(to: nodeB, weight: 2)
+		nodeA.addEdge(to: nodeC, weight: 3)
+		
+		let edgeAToB = nodeA.edge(to: nodeB)
+		let edgeAToC = nodeA.edge(to: nodeC)
+		
+		XCTAssertTrue(edgeAToB.isExpected)
+		XCTAssertTrue(edgeAToC.isExpected)
+		XCTAssertTrue(nodeB.edge(to: nodeC).isUnexpected)
+		
+		XCTAssertEqual(edgeAToB.data?.weight, 2)
+		XCTAssertEqual(edgeAToC.data?.weight, 3)
 	}
 	
 	func testAddEdge() {

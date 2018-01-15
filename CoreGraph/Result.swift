@@ -9,12 +9,12 @@
 import Foundation
 
 
-enum Result<T> {
+public enum Result<T> {
 	case expected(T)
 	case unexpected(GraphError)
 }
 
-extension Result {
+public extension Result {
 	var isExpected: Bool {
 		switch self {
 		case .expected(_): return true

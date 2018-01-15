@@ -27,16 +27,23 @@ class FrontierPathTests: XCTestCase {
 		
 		pathB.previous = pathA
 		pathC.previous = pathB
+		
 		path = pathC
+		path.previous = pathB
+		path.previous?.previous = pathA
 		path.total = 139
 	}
+	
 	
 	
 	func testGetNodeValues() {
 		let nodes = path.nodeValues
 		
-		XCTAssertEqual(nodes, [23, 38, 42])
-		
+		XCTAssertEqual(nodes, [42, 38, 23])
+	}
+	
+	func testGetDescription() {
+		XCTAssertEqual("\(path!)", "[42] — [38] — [23]")
 	}
 	
 	func testHasNode() {

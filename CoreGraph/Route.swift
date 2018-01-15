@@ -8,24 +8,24 @@
 
 import Foundation
 
-/// A route along a `Graph`. Consists of a array of `Node` content values of type `N` and corresponding distances.
-struct Route<N: Equatable> {
+/// A route along a `Graph`. Consists of a array of content values of type `N` and corresponding distances between the waypoints.
+public struct Route<N: Equatable> {
 	
 	/// The waypoints making up the route and the corresponding distances in meters
-	let waypoints: [(waypoint: N, distance: Double)]
+	public let waypoints: [(waypoint: N, distance: Double)]
 	
 	/// Calculates the total distance of all waypoints
-	var totalDistance: Double {
+	public var totalDistance: Double {
 		return waypoints.reduce(0.0) { return $0 + $1.distance }
 	}
 	
-	/// Initializes the Route from a `FrontierPath` object.
-	/// - Parameter path: A `FrontierPath` object that is making up the route.
+	/// Initializes the Route from a `Frontier.Path` object.
+	/// - Parameter path: A `Frontier.Path` object that is making up the route.
 	/// - Returns: Either:
 	///    - A `Route` with the waypoints of the given path.
 	///    - `nil` when the path's total value is 0 or smaller.
-	init?(path: Frontier<N>.Path<N>) {
-		guard path.total > 0 else {
+	internal init?(path: Frontier<N>.Path<N>) {
+		guard path.total > 0 && path.total != Double.infinity else {
 			return nil
 		}
 		
@@ -43,10 +43,15 @@ struct Route<N: Equatable> {
 		
 		self.waypoints = waypoints.reversed()
 	}
+	
+	/// Hiding the default initializer from outside the framework.
+	internal init() {
+		self.waypoints = []
+	}
 }
 
 extension Route: CustomStringConvertible {
-	var description: String {		
-		return ""
+	public var description: String {
+		return "[\(waypoints.first!.waypoint)]" + waypoints.dropFirst().map { " —\($0.distance)— [\($0.waypoint)]" }.joined()
 	}
 }
