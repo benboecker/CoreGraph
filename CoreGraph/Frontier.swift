@@ -31,35 +31,46 @@ extension Frontier {
 	}
 	
 	func add(_ path: Path<N>) {
-		paths.append(path)
-		
-		var childIndex = paths.count - 1
-		var parentIndex: Int! = 0
-		
-		//calculate parent index
-		if childIndex != 0 {
-			parentIndex = (childIndex - 1) / 2
+		if paths.isEmpty {
+			paths.append(path)
+			return
 		}
 		
-		var childToUse: Path<N>
-		var parentToUse: Path<N>
-		
-		//use the bottom-up approach
-		while childIndex != 0 {
-			childToUse = paths[childIndex]
-			parentToUse = paths[parentIndex]
-
-			//swap child and parent positions
-			if childToUse.total < parentToUse.total {
-				(paths[parentIndex], paths[childIndex]) = (paths[childIndex], paths[parentIndex])
-			}
-			
-			//reset indices
-			childIndex = parentIndex
-			if (childIndex != 0) {
-				parentIndex = (childIndex - 1) / 2
-			}
+		if paths[0].total < path.total {
+			paths.append(path)
+		} else {
+			paths.insert(path, at: 0)
 		}
+		
+//		paths.append(path)
+//
+//		var childIndex = paths.count - 1
+//		var parentIndex: Int! = 0
+//
+//		//calculate parent index
+//		if childIndex != 0 {
+//			parentIndex = (childIndex - 1) / 2
+//		}
+//
+//		var childToUse: Path<N>
+//		var parentToUse: Path<N>
+//
+//		//use the bottom-up approach
+//		while childIndex != 0 {
+//			childToUse = paths[childIndex]
+//			parentToUse = paths[parentIndex]
+//
+//			//swap child and parent positions
+//			if childToUse.total < parentToUse.total {
+//				(paths[parentIndex], paths[childIndex]) = (paths[childIndex], paths[parentIndex])
+//			}
+//
+//			//reset indices
+//			childIndex = parentIndex
+//			if (childIndex != 0) {
+//				parentIndex = (childIndex - 1) / 2
+//			}
+//		}
 	}
 	
 	@discardableResult func remove(_ path: Path<N>) -> Result<Int> {

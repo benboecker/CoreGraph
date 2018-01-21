@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B334778E200CD8B100C3EE1B /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B334778D200CD8B100C3EE1B /* RouteTests.swift */; };
+		B3742122200CE56B00BEC17C /* GraphPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */; };
+		B3742124200CE7C300BEC17C /* routing.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3742123200CE7C300BEC17C /* routing.plist */; };
 		B3A2DAFF200687B300C2276D /* CoreGraph.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A2DAF5200687B200C2276D /* CoreGraph.framework */; };
 		B3A2DB06200687B300C2276D /* CoreGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = B3A2DAF8200687B200C2276D /* CoreGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B3A2DB152006882500C2276D /* Frontier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB0F2006881C00C2276D /* Frontier.swift */; };
@@ -39,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		B334778D200CD8B100C3EE1B /* RouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTests.swift; sourceTree = "<group>"; };
+		B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphPerformanceTests.swift; sourceTree = "<group>"; };
+		B3742123200CE7C300BEC17C /* routing.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = routing.plist; sourceTree = "<group>"; };
 		B3A2DAF5200687B200C2276D /* CoreGraph.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreGraph.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3A2DAF8200687B200C2276D /* CoreGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreGraph.h; sourceTree = "<group>"; };
 		B3A2DAF9200687B200C2276D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -118,8 +122,10 @@
 		B3A2DB02200687B300C2276D /* CoreGraphTests */ = {
 			isa = PBXGroup;
 			children = (
+				B3742123200CE7C300BEC17C /* routing.plist */,
 				B3A2DB05200687B300C2276D /* Info.plist */,
 				B3A2DB1B2006887000C2276D /* GraphTest.swift */,
+				B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */,
 				B3A2DB1C2006887100C2276D /* NodeTests.swift */,
 				B3A2DB2D200913B900C2276D /* ResultTests.swift */,
 				B3A2DB2F200913C200C2276D /* EdgeTests.swift */,
@@ -232,6 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3742124200CE7C300BEC17C /* routing.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +266,7 @@
 			files = (
 				B3A2DB1D2006887200C2276D /* GraphTest.swift in Sources */,
 				B3A2DB1E2006887200C2276D /* NodeTests.swift in Sources */,
+				B3742122200CE56B00BEC17C /* GraphPerformanceTests.swift in Sources */,
 				B3A2DB2E200913B900C2276D /* ResultTests.swift in Sources */,
 				B3A2DB362009204900C2276D /* FrontierPathTests.swift in Sources */,
 				B3A2DB3220091A5900C2276D /* ArrayTests.swift in Sources */,

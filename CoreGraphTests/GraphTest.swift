@@ -168,6 +168,34 @@ N[5]
 		}
 	}
 	
+	func testCircularGraph2() {
+		var graph = Graph<Int>()
+		
+		graph.addNode(with: 1)
+		graph.addNode(with: 2)
+		graph.addNode(with: 3)
+		graph.addNode(with: 4)
+		
+		graph.addEdge(from: 1, to: 2, weight: 1)
+		graph.addEdge(from: 2, to: 3, weight: 2)
+		graph.addEdge(from: 3, to: 4, weight: 3)
+		graph.addEdge(from: 4, to: 1, weight: 4)
+		graph.addEdge(from: 3, to: 1, weight: 1)
+		graph.addEdge(from: 4, to: 2, weight: 1)
+		
+		let result = graph.shortestPath(from: 1, to: 3)
+		
+		XCTAssertTrue(result.isExpected)
+		
+		result.onExpected { route in
+			//XCTAssertEqual("\(route)", "[1] —1.0— [2] —2.0— [3]")
+		}
+		
+		result.onUnexpected { error in
+			XCTFail("\(error)")
+		}
+	}
+	
 	func testShortestRoute2() {
 		var graph = Graph<String>()
 		

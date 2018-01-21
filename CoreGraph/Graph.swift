@@ -67,7 +67,7 @@ public extension Graph {
 	- Paramater to: The content value of the destination `Node`.
 	- Returns: A `Route` object containing the contents of each `Node` on the shortest path and the corresponding distances between each node.
 	*/
-	func shortestPath(from: N, to: N) -> Result<Route<N>> {
+	func shortestPath(from: N, to: N, minimum: Int = 100) -> Result<Route<N>> {
 		guard let source = self[from] else {
 			return .unexpected(.startingPOINotFound)
 		}
@@ -97,13 +97,19 @@ public extension Graph {
 			// Finding the current best path, which can't be nil.
 			let bestPath = frontier.getBestPath().data!
 			
-			// Removing the best path since it will be added to the final paths if it reaches the destination.
-			// This way, the frontier eventually gets smaller and smaller.
-			frontier.remove(bestPath)
 			
 			// For each edge in the best path, add a new path to the frontier
 			for edge in bestPath.destination.edges {
-				guard !bestPath.has(node: edge.destination) else {
+				var bestPathHasNode = true
+				if frontier.paths.count % 1000 == 0 {
+					_measure("Has node at \(frontier.paths.count)") {
+						bestPathHasNode = bestPath.has(node: edge.destination)
+					}
+				} else {
+					bestPathHasNode = bestPath.has(node: edge.destination)
+				}
+				
+				guard !bestPathHasNode else {
 					continue
 				}
 				
@@ -114,9 +120,18 @@ public extension Graph {
 				frontier.add(newPath)
 			}
 			
+			// Removing the best path since it will be added to the final paths if it reaches the destination.
+			// This way, the frontier eventually gets smaller and smaller.
+			frontier.remove(bestPath)
+
 			// When the destination is reached, the current best path is added to the final paths array.
 			if bestPath.destination == destination {
+				
 				finalPaths.add(bestPath)
+				
+				if finalPaths.paths.count >= minimum {
+					frontier.removeAllPaths()
+				}
 			}
 		}
 		
@@ -160,7 +175,13 @@ extension Graph {
 	*/
 	subscript(value: N) -> Node<N>? {
 		get {
-			return nodes.filter { $0.value == value }.first
+			for node in nodes {
+				if node.value == value {
+					return node
+				}
+			}
+			
+			return nil
 		}
 	}
 }
@@ -184,4 +205,19 @@ extension Graph: CustomStringConvertible {
 
 
 
+
+
+func _measure(_ title: String? = nil, call: () -> Void) {
+	let startTime = CACurrentMediaTime()
+	call()
+	let endTime = CACurrentMediaTime()
+	
+	print("--------------------------------------------")
+	if let title = title {
+		print("\(title): Time - \(endTime - startTime)")
+	} else {
+		print("Time - \(endTime - startTime)")
+	}
+	print("--------------------------------------------")
+}
 
