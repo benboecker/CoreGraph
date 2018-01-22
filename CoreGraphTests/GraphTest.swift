@@ -10,8 +10,12 @@ import XCTest
 @testable import CoreGraph
 
 class GraphTest: XCTestCase {
-	
-	struct City: Equatable {
+
+	struct City: Equatable, Hashable {
+		var hashValue: Int {
+			return name.hashValue
+		}
+
 		let name: String
 		let population: Int
 
@@ -25,8 +29,8 @@ class GraphTest: XCTestCase {
 		var graph = Graph<Int>()
 
 		let nodeA = graph.addNode(with: 1).data!
-		graph.addNode(with: 2)
-		graph.addNode(with: 3)
+		let _ = graph.addNode(with: 2)
+		let _ = graph.addNode(with: 3)
 		let nodeD = graph.addNode(with: 4).data!
 		let nodeE = graph.addNode(with: 5).data!
 		let nodeF = graph.addNode(with: 3).error
@@ -39,31 +43,32 @@ class GraphTest: XCTestCase {
 		graph.addEdge(from: 4, to: 5, weight: 18) // Does not work and simply silently returns
 
 		XCTAssertEqual(nodeF, GraphError.nodeAlreadyExists)
-		
+
 		XCTAssertEqual(graph.nodes.count, 5)
-		XCTAssertTrue(graph.nodes[0].hasEdge(to: nodeD))
-		XCTAssertTrue(graph.nodes[3].hasEdge(to: nodeE))
-		XCTAssertFalse(graph.nodes[1].hasEdge(to: nodeE))
-		XCTAssertTrue(graph.nodes[1].hasEdge(to: nodeA))
-		
-		let description = """
-N[1]
-	—1.0— [2]
-	—4.0— [4]
-N[2]
-	—1.0— [1]
-	—5.0— [4]
-	—2.0— [3]
-N[3]
-	—2.0— [2]
-N[4]
-	—4.0— [1]
-	—5.0— [2]
-	—8.0— [5]
-N[5]
-	—8.0— [4]
-"""
-		XCTAssertEqual(String(describing: graph), description)
+		XCTAssertTrue(graph.nodes[1]!.hasEdge(to: nodeD))
+		XCTAssertFalse(graph.nodes[2]!.hasEdge(to: nodeE))
+		XCTAssertFalse(graph.nodes[2]!.hasEdge(to: nodeE))
+		XCTAssertTrue(graph.nodes[4]!.hasEdge(to: nodeA))
+		XCTAssertTrue(graph.nodes[4]!.hasEdge(to: nodeE))
+
+//		let description = """
+//N[1]
+//	—1.0— [2]
+//	—4.0— [4]
+//N[2]
+//	—1.0— [1]
+//	—5.0— [4]
+//	—2.0— [3]
+//N[3]
+//	—2.0— [2]
+//N[4]
+//	—4.0— [1]
+//	—5.0— [2]
+//	—8.0— [5]
+//N[5]
+//	—8.0— [4]
+//"""
+		//XCTAssertEqual(String(describing: graph), description)
 	}
 
 	func testGraphSubscript() {
@@ -109,7 +114,7 @@ N[5]
 		graph.addEdge(from: "BZ", to: "MI", weight: 222)
 	}
 
-	
+
 	func testShortestRoute1() {
 		var graph = Graph<String>()
 
@@ -126,13 +131,13 @@ N[5]
 		graph.addEdge(from: "D", to: "E", weight: 8)
 
 		let shortestPathResult = graph.shortestPath(from: "A", to: "E")
-		
+
 		XCTAssertTrue(shortestPathResult.isExpected)
 		XCTAssertNotNil(shortestPathResult.data)
 		XCTAssertEqual(shortestPathResult.data?.totalDistance, 12)
-		
+
 		XCTAssertEqual("\(shortestPathResult.data!)", "[A] —4.0— [D] —8.0— [E]")
-		
+
 		XCTAssertEqual(shortestPathResult.data?.waypoints.count, 3)
 		XCTAssertEqual(shortestPathResult.data?.waypoints[0].waypoint, "A")
 		XCTAssertEqual(shortestPathResult.data?.waypoints[0].distance, 0)
@@ -144,61 +149,61 @@ N[5]
 
 	func testCircularGraph() {
 		var graph = Graph<Int>()
-		
+
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
 		graph.addNode(with: 3)
 		graph.addNode(with: 4)
-		
+
 		graph.addEdge(from: 1, to: 2, weight: 1)
 		graph.addEdge(from: 2, to: 3, weight: 2)
 		graph.addEdge(from: 3, to: 4, weight: 3)
 		graph.addEdge(from: 4, to: 1, weight: 4)
-		
+
 		let result = graph.shortestPath(from: 1, to: 3)
-		
+
 		XCTAssertFalse(result.isUnexpected)
-		
+
 		result.onExpected { route in
 			XCTAssertEqual("\(route)", "[1] —1.0— [2] —2.0— [3]")
 		}
-		
+
 		result.onUnexpected { error in
 			XCTFail("\(error)")
 		}
 	}
-	
+
 	func testCircularGraph2() {
 		var graph = Graph<Int>()
-		
+
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
 		graph.addNode(with: 3)
 		graph.addNode(with: 4)
-		
+
 		graph.addEdge(from: 1, to: 2, weight: 1)
 		graph.addEdge(from: 2, to: 3, weight: 2)
 		graph.addEdge(from: 3, to: 4, weight: 3)
 		graph.addEdge(from: 4, to: 1, weight: 4)
 		graph.addEdge(from: 3, to: 1, weight: 1)
 		graph.addEdge(from: 4, to: 2, weight: 1)
-		
+
 		let result = graph.shortestPath(from: 1, to: 3)
-		
+
 		XCTAssertTrue(result.isExpected)
-		
+
 		result.onExpected { route in
 			//XCTAssertEqual("\(route)", "[1] —1.0— [2] —2.0— [3]")
 		}
-		
+
 		result.onUnexpected { error in
 			XCTFail("\(error)")
 		}
 	}
-	
+
 	func testShortestRoute2() {
 		var graph = Graph<String>()
-		
+
 		graph.addNode(with: "KA") // A
 		graph.addNode(with: "OL") // B
 		graph.addNode(with: "ZH") // C
@@ -218,9 +223,9 @@ N[5]
 		graph.addEdge(from: "LU", to: "BZ", weight: 141)
 		graph.addEdge(from: "KS", to: "MI", weight: 190)
 		graph.addEdge(from: "BZ", to: "MI", weight: 222)
-		
+
 		let shortestPathResult = graph.shortestPath(from: "KA", to: "MI")
-		
+
 		XCTAssertEqual(shortestPathResult.data?.waypoints.count, 4)
 		XCTAssertEqual(shortestPathResult.data?.waypoints[0].waypoint, "KA")
 		XCTAssertEqual(shortestPathResult.data?.waypoints[0].distance, 0)
@@ -282,15 +287,14 @@ N[5]
 			XCTAssertEqual(route.waypoints[2].distance, 100.0)
 		}
 	}
-	
+
 	func testEmptyGraph() {
 		let graph = Graph<String>()
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult.isUnexpected)
 		XCTAssertEqual(shortestPathResult.error, GraphError.startingPOINotFound)
-		
 	}
-	
+
 	func testDestinationNotFound() {
 		var graph = Graph<String>()
 		graph.addNode(with: "A")
@@ -298,7 +302,7 @@ N[5]
 		XCTAssertTrue(shortestPathResult.isUnexpected)
 		XCTAssertEqual(shortestPathResult.error, GraphError.destinationPOINotFound)
 	}
-	
+
 	func testBestPathNotFound() {
 		var graph = Graph<String>()
 		graph.addNode(with: "A")
@@ -306,7 +310,7 @@ N[5]
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
 		XCTAssertEqual(shortestPathResult.error, GraphError.shortestPathNotFound)
 	}
-	
+
 	func testClearGraph() {
 		var graph = Graph<String>()
 		graph.addNode(with: "A")
@@ -315,12 +319,13 @@ N[5]
 
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult.isExpected)
-		
+
 		graph.clear()
 
 		let shortestPathResult2 = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult2.isUnexpected)
 	}
 }
+
 
 

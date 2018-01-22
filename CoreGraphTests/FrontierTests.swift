@@ -96,11 +96,11 @@ class FrontierTests: XCTestCase {
 		frontier.add(pathA)
 		XCTAssertFalse(frontier.isEmpty)
 
-		let resultA = frontier.remove(pathA)
+		let resultA = frontier.removeBestPath()
 		XCTAssertTrue(frontier.isEmpty)
 		
 		XCTAssertTrue(resultA.isExpected)
-		let resultB = frontier.remove(pathA)
+		let resultB = frontier.removeBestPath()
 		XCTAssertTrue(resultB.isUnexpected)
 		XCTAssertEqual(resultB.error!, GraphError.elementNotRemoved)
 	}
@@ -138,48 +138,4 @@ class FrontierTests: XCTestCase {
 		XCTAssertEqual(bestPathResult.error!, GraphError.frontierIsEmpty)		
 	}
 	
-//	func testHeap() {
-//		frontier.add(pathA)
-//		frontier.add(pathB)
-//		frontier.add(pathC)
-//		frontier.add(pathD)
-//		frontier.add(pathE)
-//		frontier.add(pathF)
-//		
-//		XCTAssertEqual(frontier.paths, [pathB, pathE, pathC, pathA, pathD, pathF])
-//		
-//		let bestPath = frontier.getBestPath().data!
-//		XCTAssertEqual("\(bestPath)", "[A] — [B] — [D] — [F]")
-//	}
-//	
-//	func testDescription() {
-//		frontier.add(pathA)
-//		frontier.add(pathB)
-//		frontier.add(pathC)
-//		frontier.add(pathD)
-//		frontier.add(pathE)
-//		frontier.add(pathF)
-//		
-//		let description = """
-//[A] — [B] — [D] — [F]
-//[A] — [C] — [B]
-//[A] — [B] — [D] — [E]
-//[A] — [B] — [E] — [F]
-//[A] — [C] — [D]
-//[A] — [C] — [E] — [F]
-//"""
-//
-//		XCTAssertEqual("\(frontier!)", description)
-//	}
 }
-
-
-
-
-
-
-
-
-
-
-

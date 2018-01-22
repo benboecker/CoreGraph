@@ -11,7 +11,7 @@ import Foundation
 
 
 class Frontier<N: Equatable> {
-	var paths: [Path<N>] = []
+	var paths = MinimumHeap<Path<N>>()
 }
 
 // MARK: - Public methods and properties
@@ -31,50 +31,16 @@ extension Frontier {
 	}
 	
 	func add(_ path: Path<N>) {
-		if paths.isEmpty {
-			paths.append(path)
-			return
-		}
-		
-		if paths[0].total < path.total {
-			paths.append(path)
-		} else {
-			paths.insert(path, at: 0)
-		}
-		
-//		paths.append(path)
-//
-//		var childIndex = paths.count - 1
-//		var parentIndex: Int! = 0
-//
-//		//calculate parent index
-//		if childIndex != 0 {
-//			parentIndex = (childIndex - 1) / 2
-//		}
-//
-//		var childToUse: Path<N>
-//		var parentToUse: Path<N>
-//
-//		//use the bottom-up approach
-//		while childIndex != 0 {
-//			childToUse = paths[childIndex]
-//			parentToUse = paths[parentIndex]
-//
-//			//swap child and parent positions
-//			if childToUse.total < parentToUse.total {
-//				(paths[parentIndex], paths[childIndex]) = (paths[childIndex], paths[parentIndex])
-//			}
-//
-//			//reset indices
-//			childIndex = parentIndex
-//			if (childIndex != 0) {
-//				parentIndex = (childIndex - 1) / 2
-//			}
-//		}
+		paths.add(path)
 	}
 	
-	@discardableResult func remove(_ path: Path<N>) -> Result<Int> {
-		return paths.remove(object: path)
+	@discardableResult func removeBestPath() -> Result<Int> {
+		guard !paths.isEmpty else {
+			return .unexpected(GraphError.elementNotRemoved)
+		}
+		paths.removeFirst()
+		
+		return .expected(0)
 	}
 }
 
@@ -135,18 +101,20 @@ extension Frontier {
 // MARK: - Frontier CustomStringConvertible
 extension Frontier: CustomStringConvertible {
 	var description: String {
-		return paths.map { "\($0)" }.joined(separator: "\n")
+		return ""
+		//return paths.map { "\($0)" }.joined(separator: "\n")
 	}
 }
 
 // MARK: - Frontier.Path CustomStringConvertible
 extension Frontier.Path: CustomStringConvertible {
 	var description: String {
-		guard let p = previous else {
-			return "[\(destination.value)]"
-		}
-		
-		return "[\(destination.value)] — \(String(describing: p))"
+		return "\(total)"
+//		guard let p = previous else {
+//			return "[\(destination.value)]"
+//		}
+//
+//		return "[\(destination.value)] — \(String(describing: p))"
 	}
 }
 

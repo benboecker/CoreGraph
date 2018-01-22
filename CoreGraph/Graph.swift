@@ -8,12 +8,15 @@
 
 import Foundation
 
+
 /**
 This struct represents the graph used for calculating the shortest path between nodes.
 */
-public struct Graph<N: Equatable> {
+public struct Graph<N: Hashable> {
 	/// Stores the nodes that build the graph
-	private(set) var nodes: [Node<N>] = []
+	//private(set) var nodes: [Node<N>] = []
+	
+	private(set) var nodes: [N: Node<N>] = [:]
 	
 	public init() {
 		
@@ -34,7 +37,8 @@ public extension Graph {
 		guard !hasNode(with: value) else { return .unexpected(.nodeAlreadyExists) }
 		
 		let node = Node<N>(with: value)
-		nodes.append(node)
+		//nodes.append(node)
+		nodes[value] = node
 		
 		return .expected(value)
 	}
@@ -80,31 +84,22 @@ public extension Graph {
 
 		let startingPath: Frontier<N>.Path<N> = Frontier.Path(destination: source)
 		startingPath.total = 0
+		frontier.add(startingPath)
 		
 		// Contains all paths that are shortest to the destination node of the path
 		let finalPaths = Frontier<N>()
 		
-		// Buildung the starting frontier
-		for edge in source.edges {
-			let newPath = Frontier<N>.Path<N>(destination: edge.destination)
-			newPath.total = edge.weight
-			newPath.previous = startingPath
-			frontier.add(newPath)
-		}
-		
+		var maxFrontierCount = 0
 		// Calculate paths to all nodes while the frontier is not empty
 		while !frontier.isEmpty {
 			// Finding the current best path, which can't be nil.
 			let bestPath = frontier.getBestPath().data!
 			
-			
 			// For each edge in the best path, add a new path to the frontier
 			for edge in bestPath.destination.edges {
 				var bestPathHasNode = true
 				if frontier.paths.count % 1000 == 0 {
-					_measure("Has node at \(frontier.paths.count)") {
-						bestPathHasNode = bestPath.has(node: edge.destination)
-					}
+					bestPathHasNode = bestPath.has(node: edge.destination)			
 				} else {
 					bestPathHasNode = bestPath.has(node: edge.destination)
 				}
@@ -118,11 +113,17 @@ public extension Graph {
 				newPath.total = bestPath.total + edge.weight
 				
 				frontier.add(newPath)
+				maxFrontierCount = max(maxFrontierCount, frontier.paths.count)
 			}
 			
 			// Removing the best path since it will be added to the final paths if it reaches the destination.
 			// This way, the frontier eventually gets smaller and smaller.
-			frontier.remove(bestPath)
+			//_measure("Removing the best path") {
+				
+			frontier.removeBestPath()
+				
+			//}
+			
 
 			// When the destination is reached, the current best path is added to the final paths array.
 			if bestPath.destination == destination {
@@ -134,7 +135,7 @@ public extension Graph {
 				}
 			}
 		}
-		
+		print(maxFrontierCount)
 		// Getting the path to the destination node with the lowest total weight
 		if let path = finalPaths.getBestPath().data, let route = Route(path: path) {
 			return .expected(route)
@@ -173,15 +174,12 @@ extension Graph {
 	- Parameter value: The value to look for in the nodes array.
 	- Returns: The `Node?` object that contains the given value or nil if no node contains this value.
 	*/
-	subscript(value: N) -> Node<N>? {
+	internal subscript(value: N) -> Node<N>? {
 		get {
-			for node in nodes {
-				if node.value == value {
-					return node
-				}
-			}
-			
-			return nil
+			return nodes[value]
+//			return nodes.filter { node in
+//				return node.value == value
+//			}.first
 		}
 	}
 }
@@ -191,7 +189,7 @@ extension Graph: CustomStringConvertible {
 	public var description: String {
 		var result = ""
 		
-		for node in nodes {
+		for (_, node) in nodes {
 			result += "\(node)\n"
 		}
 		result.removeLast()
