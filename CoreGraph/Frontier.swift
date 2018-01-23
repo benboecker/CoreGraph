@@ -11,7 +11,7 @@ import Foundation
 
 
 class Frontier<N: Equatable> {
-	var paths = MinimumHeap<Path<N>>()
+	var paths = MinHeap<Path<N>>()
 }
 
 // MARK: - Public methods and properties
@@ -38,7 +38,7 @@ extension Frontier {
 		guard !paths.isEmpty else {
 			return .unexpected(GraphError.elementNotRemoved)
 		}
-		paths.removeFirst()
+		paths.remove()
 		
 		return .expected(0)
 	}

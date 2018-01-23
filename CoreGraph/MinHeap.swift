@@ -8,7 +8,10 @@
 
 import Foundation
 
-struct MinimumHeap<T: Comparable>: ExpressibleByArrayLiteral {
+/**
+This struct represents a minimum heap.
+*/
+struct MinHeap<T: Comparable>: ExpressibleByArrayLiteral {
 	typealias ArrayLiteralElement = T
 
 	private var heap = [T]()
@@ -18,7 +21,7 @@ struct MinimumHeap<T: Comparable>: ExpressibleByArrayLiteral {
 	}
 }
 
-extension MinimumHeap {
+extension MinHeap {
 	var isEmpty: Bool {
 		return heap.isEmpty
 	}
@@ -34,33 +37,10 @@ extension MinimumHeap {
 	mutating func add(_ element: T) {
 		heap.append(element)
 
-		var childIndex: Int = heap.count - 1
-		var parentIndex: Int = 0
-
-		if childIndex != 0 {
-			parentIndex = (childIndex - 1) / 2
-		}
-
-		var childToUse: T
-		var parentToUse: T
-
-		while childIndex != 0 {
-			childToUse = heap[childIndex]
-			parentToUse = heap[parentIndex]
-
-			if childToUse < parentToUse {
-				heap.swapAt(parentIndex, childIndex)
-			}
-
-			childIndex = parentIndex
-
-			if childIndex != 0 {
-				parentIndex = (childIndex - 1) / 2
-			}
-		}
+		shiftUp(from: heap.count - 1)
 	}
 	
-	mutating func removeFirst() {
+	mutating func remove() {
 		guard !isEmpty else { return }
 		heap.remove(at: 0)
 		guard !isEmpty else { return }
@@ -71,7 +51,7 @@ extension MinimumHeap {
 		shiftDown(from: 0)
 	}
 	
-	var first: T? {
+	func peek() -> T? {
 		return heap.first
 	}
 	
@@ -82,7 +62,17 @@ extension MinimumHeap {
 	}
 }
 
-private extension MinimumHeap {
+private extension MinHeap {
+	mutating func shiftUp(from childIndex: Int) {
+		let parentIndex = (childIndex - 1) / 2
+		
+		let child = heap[childIndex]
+		
+		if child < heap[parentIndex] {
+			heap.swapAt(childIndex, parentIndex)
+			shiftUp(from: parentIndex)
+		}
+	}
 	
 	mutating func shiftDown(from parentIndex: Int) {
 		let leftIndex = (parentIndex * 2) + 1
@@ -112,7 +102,7 @@ private extension MinimumHeap {
 }
 
 
-extension MinimumHeap: CustomStringConvertible {
+extension MinHeap: CustomStringConvertible {
 	var description: String {
 		return "\(heap)"
 	}

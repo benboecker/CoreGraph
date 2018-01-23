@@ -35,7 +35,7 @@ class GraphPerformanceTests: XCTestCase {
 			let shortestPath = graph.shortestPath(from: -35330, to: -34774, minimum: 1)
 			XCTAssertTrue(shortestPath.isExpected)
 		}
-		
+
 		_measure("Westend -> Sammelplatz 2") {
 			let shortestPath = graph.shortestPath(from: -35330, to: -39504, minimum: 1)
 			XCTAssertTrue(shortestPath.isExpected)

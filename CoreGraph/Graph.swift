@@ -81,15 +81,17 @@ public extension Graph {
 		
 		/// Represents the frontier. It is contains all paths along the graph.
 		let frontier = Frontier<N>()
+		// Contains all paths that are shortest to the destination node of the path
+		let finalPaths = Frontier<N>()
 
+		// The starting path in the frontier.
 		let startingPath: Frontier<N>.Path<N> = Frontier.Path(destination: source)
 		startingPath.total = 0
 		frontier.add(startingPath)
 		
-		// Contains all paths that are shortest to the destination node of the path
-		let finalPaths = Frontier<N>()
-		
+		// Counting how big the frontier gets for debugging purposes
 		var maxFrontierCount = 0
+		
 		// Calculate paths to all nodes while the frontier is not empty
 		while !frontier.isEmpty {
 			// Finding the current best path, which can't be nil.
@@ -97,14 +99,7 @@ public extension Graph {
 			
 			// For each edge in the best path, add a new path to the frontier
 			for edge in bestPath.destination.edges {
-				var bestPathHasNode = true
-				if frontier.paths.count % 1000 == 0 {
-					bestPathHasNode = bestPath.has(node: edge.destination)			
-				} else {
-					bestPathHasNode = bestPath.has(node: edge.destination)
-				}
-				
-				guard !bestPathHasNode else {
+				guard !bestPath.has(node: edge.destination) else {
 					continue
 				}
 				
@@ -118,16 +113,10 @@ public extension Graph {
 			
 			// Removing the best path since it will be added to the final paths if it reaches the destination.
 			// This way, the frontier eventually gets smaller and smaller.
-			//_measure("Removing the best path") {
-				
 			frontier.removeBestPath()
-				
-			//}
 			
-
 			// When the destination is reached, the current best path is added to the final paths array.
 			if bestPath.destination == destination {
-				
 				finalPaths.add(bestPath)
 				
 				if finalPaths.paths.count >= minimum {
@@ -135,7 +124,9 @@ public extension Graph {
 				}
 			}
 		}
+		
 		print(maxFrontierCount)
+		
 		// Getting the path to the destination node with the lowest total weight
 		if let path = finalPaths.getBestPath().data, let route = Route(path: path) {
 			return .expected(route)

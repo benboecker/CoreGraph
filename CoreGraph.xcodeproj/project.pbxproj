@@ -27,8 +27,8 @@
 		B3A2DB3220091A5900C2276D /* ArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB3120091A5900C2276D /* ArrayTests.swift */; };
 		B3A2DB342009203900C2276D /* FrontierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB332009203900C2276D /* FrontierTests.swift */; };
 		B3A2DB362009204900C2276D /* FrontierPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB352009204900C2276D /* FrontierPathTests.swift */; };
-		B3F53D4E2015E19600359ED0 /* MinimumHeap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4D2015E19600359ED0 /* MinimumHeap.swift */; };
-		B3F53D502015E32500359ED0 /* MinimumHeapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4F2015E32500359ED0 /* MinimumHeapTests.swift */; };
+		B3F53D4E2015E19600359ED0 /* MinHeap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4D2015E19600359ED0 /* MinHeap.swift */; };
+		B3F53D502015E32500359ED0 /* MinHeapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4F2015E32500359ED0 /* MinHeapTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,8 +65,8 @@
 		B3A2DB3120091A5900C2276D /* ArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTests.swift; sourceTree = "<group>"; };
 		B3A2DB332009203900C2276D /* FrontierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontierTests.swift; sourceTree = "<group>"; };
 		B3A2DB352009204900C2276D /* FrontierPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontierPathTests.swift; sourceTree = "<group>"; };
-		B3F53D4D2015E19600359ED0 /* MinimumHeap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumHeap.swift; sourceTree = "<group>"; };
-		B3F53D4F2015E32500359ED0 /* MinimumHeapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumHeapTests.swift; sourceTree = "<group>"; };
+		B3F53D4D2015E19600359ED0 /* MinHeap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinHeap.swift; sourceTree = "<group>"; };
+		B3F53D4F2015E32500359ED0 /* MinHeapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinHeapTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 				B3A2DB2720068A2000C2276D /* Result.swift */,
 				B3A2DB2820068A2A00C2276D /* GraphError.swift */,
 				B3A2DB2B20068B0E00C2276D /* Array-Extensions.swift */,
-				B3F53D4D2015E19600359ED0 /* MinimumHeap.swift */,
+				B3F53D4D2015E19600359ED0 /* MinHeap.swift */,
 				B3A2DAF9200687B200C2276D /* Info.plist */,
 			);
 			path = CoreGraph;
@@ -138,7 +138,7 @@
 				B3A2DB332009203900C2276D /* FrontierTests.swift */,
 				B3A2DB352009204900C2276D /* FrontierPathTests.swift */,
 				B334778D200CD8B100C3EE1B /* RouteTests.swift */,
-				B3F53D4F2015E32500359ED0 /* MinimumHeapTests.swift */,
+				B3F53D4F2015E32500359ED0 /* MinHeapTests.swift */,
 			);
 			path = CoreGraphTests;
 			sourceTree = "<group>";
@@ -258,7 +258,7 @@
 				B3A2DB172006882500C2276D /* Graph.swift in Sources */,
 				B3A2DB182006882500C2276D /* Route.swift in Sources */,
 				B3A2DB152006882500C2276D /* Frontier.swift in Sources */,
-				B3F53D4E2015E19600359ED0 /* MinimumHeap.swift in Sources */,
+				B3F53D4E2015E19600359ED0 /* MinHeap.swift in Sources */,
 				B3A2DB1A2006882500C2276D /* Node.swift in Sources */,
 				B3A2DB2C20068B0E00C2276D /* Array-Extensions.swift in Sources */,
 				B3A2DB2A20068A2B00C2276D /* GraphError.swift in Sources */,
@@ -274,7 +274,7 @@
 				B3A2DB1D2006887200C2276D /* GraphTest.swift in Sources */,
 				B3A2DB1E2006887200C2276D /* NodeTests.swift in Sources */,
 				B3742122200CE56B00BEC17C /* GraphPerformanceTests.swift in Sources */,
-				B3F53D502015E32500359ED0 /* MinimumHeapTests.swift in Sources */,
+				B3F53D502015E32500359ED0 /* MinHeapTests.swift in Sources */,
 				B3A2DB2E200913B900C2276D /* ResultTests.swift in Sources */,
 				B3A2DB362009204900C2276D /* FrontierPathTests.swift in Sources */,
 				B3A2DB3220091A5900C2276D /* ArrayTests.swift in Sources */,

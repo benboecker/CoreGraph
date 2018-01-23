@@ -87,7 +87,7 @@ class FrontierTests: XCTestCase {
 	func testAddPath() {
 		frontier.add(pathA)
 		
-		XCTAssertEqual(frontier.paths.first!, pathA)
+		XCTAssertEqual(frontier.paths.peek()!, pathA)
 	}
 	
 	func testRemovePath() {
