@@ -12,18 +12,18 @@ import Foundation
 Class to represent a node in the undirected graph used in the dijkstra algorithm.
 This class stores it's value as a generic parameter that has the requirement to conform to the `Equatable` protocol
 */
-class Node<N: Equatable> {
+struct Node {
 	/// Represents the value stored in the node. Must conform to `Equatable`.
-	fileprivate(set) var value: N
+	fileprivate(set) var value: Int
 	/// Represents the edges from this node to other nodes.
-	fileprivate(set) var edges: [Edge<N>] = []
+	fileprivate(set) var edges: [Edge] = []
 	
 	/**
 	This initializer sets the value stored in the node to the given parameter.
 	
 	- Parameter value: A value of type `Int`, representing the value stored in the node.
 	*/
-	init(with value: N) {
+	init(with value: Int) {
 		self.edges = []
 		self.value = value
 	}
@@ -39,12 +39,9 @@ extension Node {
 	- Parameter to: A `Node` object that the new edge connects to.
 	- Parameter weight: An `Int` indicating the weight of the new node.
 	*/
-	func addEdge(to destination: Node, weight: Double) {
+	mutating func addEdge(to destination: Node, weight: Double) {
 		let edge = Edge(to: destination, weight: weight)
 		edges.append(edge)
-		
-		let reversedEdge = Edge(to: self, weight: weight)
-		destination.edges.append(reversedEdge)
 	}
 	
 	
@@ -58,7 +55,7 @@ extension Node {
 	- Parameter to: The `Node` to which the connection should be checked.
 	- Returns: A Bool that indicates if the node has an edge to the given node.
 	*/
-	func hasEdge(to node: N) -> Bool {
+	func hasEdge(to node: Int) -> Bool {
 		return edges.filter { return $0.destination.value == node }.count > 0
 	}
 	
@@ -68,7 +65,7 @@ extension Node {
 	- Parameter to: The `Node` to which the connection should be serached for.
 	- Returns: A `Result` value containing either the expected `Edge` object or an unexpected `GraphError`.
 	*/
-	func edge(to node: Node<N>) -> Result<Edge<N>> {
+	func edge(to node: Node) -> Result<Edge> {
 		guard hasEdge(to: node.value),
 			let edge = edges.filter({ $0.destination == node }).first else {
 				return .unexpected(.edgeNotFound)
@@ -99,3 +96,9 @@ extension Node: Equatable {
 }
 
 
+// MARK: - Hashable
+extension Node: Hashable {
+	var hashValue: Int {
+		return self.value.hashValue
+	}
+}

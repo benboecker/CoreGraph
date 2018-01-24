@@ -10,8 +10,8 @@ import Foundation
 
 
 
-class Frontier<N: Equatable> {
-	var paths = MinHeap<Path<N>>()
+class Frontier {
+	var paths = MinHeap<Path>()
 }
 
 // MARK: - Public methods and properties
@@ -24,13 +24,13 @@ extension Frontier {
 		paths.removeAll()
 	}
 	
-	func getBestPath() -> Result<Path<N>> {
+	func getBestPath() -> Result<Path> {
 		guard !isEmpty else { return .unexpected(.frontierIsEmpty) }
 
 		return .expected(paths[0])
 	}
 	
-	func add(_ path: Path<N>) {
+	func add(_ path: Path) {
 		paths.add(path)
 	}
 	
@@ -44,60 +44,6 @@ extension Frontier {
 	}
 }
 
-
-extension Frontier {
-	class Path<N: Equatable> {
-	
-		/// The total weight of this path. Default value is `infinity` for calculating the shortest path
-		// in the dijkstra algorithm (The best path is always shorter than infinity).
-		var total: Double = Double.infinity
-		/// The destination `Node` of the path.
-		var destination: Node<N>
-		/// Previous path segment. `Nil` if no segment preceeds this one.
-		var previous: Path?
-		
-		/// The node content values that make up this path.
-		var nodeValues: [N] {
-			var result: [N] = [self.destination.value]
-			var p = self
-			
-			while let current = p.previous {
-				result.append(current.destination.value)
-				p = current
-			}
-			
-			return result
-		}
-		
-		/**
-		Initializer that takes a node object and sets it as the destination.
-		
-		- Parameter destination: The `Node` object that will become the destination
-		of this path. Defaults to a new `Node` object.
-		- Parameter previous: The `Path` object that precedes this path part.
-		Defaults to nil, which is the end of the path.
-		*/
-		init (destination: Node<N>, previous: Path<N>? = nil) {
-			self.destination = destination
-			self.previous = previous
-		}
-		
-		/**
-		Checks if a given `Node` appears somewhere in the path.
-		
-		- Parameter node: The `Node` to check for
-		- Returns: `true` if the node lies somewhere on the path, `false` if not.
-		*/
-		func has(node: Node<N>) -> Bool {
-			if destination == node {
-				return true
-			} else {
-				return previous?.has(node: node) ?? false
-			}
-		}
-	}
-}
-
 // MARK: - Frontier CustomStringConvertible
 extension Frontier: CustomStringConvertible {
 	var description: String {
@@ -106,29 +52,94 @@ extension Frontier: CustomStringConvertible {
 	}
 }
 
+
+extension Frontier {
+	enum Path {
+		case end
+		indirect case node(data: Node, weight: Double, previous: Path)
+	}
+}
+
+extension Frontier.Path {
+	func prepend(with data: Node, weight: Double) -> Frontier.Path {
+		return .node(data: data, weight: weight, previous: self)
+	}
+	
+	func contains(_ element: Node) -> Bool {
+		if case let .node(data, _, previous) = self {
+			if data == element {
+				return true
+			} else {
+				return previous.contains(element)
+			}
+		} else {
+			return false
+		}
+	}
+	
+	var destination: Node? {
+		if case .node(let destination, _, _) = self {
+			return destination
+		} else {
+			return nil
+		}
+	}
+	
+	var previous: Frontier.Path? {
+		if case .node(_, _, let previous) = self {
+			return previous
+		} else {
+			return nil
+		}
+	}
+	
+	var weight: Double? {
+		if case .node(_, let weight, _) = self {
+			return weight
+		} else {
+			return nil
+		}
+	}
+	
+	var totalWeight: Double {
+		if case .node(_, let weight, let previous) = self {
+			return weight + previous.totalWeight
+		} else {
+			return 0
+		}
+	}
+}
+
 // MARK: - Frontier.Path CustomStringConvertible
 extension Frontier.Path: CustomStringConvertible {
 	var description: String {
-		return "\(total)"
-//		guard let p = previous else {
-//			return "[\(destination.value)]"
-//		}
-//
-//		return "[\(destination.value)] — \(String(describing: p))"
+		if case .node(_, _, _) = self {
+			return "w[\(totalWeight)]"
+		} else {
+			return ""
+		}
 	}
 }
 
 // MARK: - Frontier.Path Equatable
 extension Frontier.Path: Equatable {
-	static func ==(left: Frontier.Path<N>, right: Frontier.Path<N>) -> Bool {
-		return left.total == right.total && left.destination == right.destination
+	static func ==(left: Frontier.Path, right: Frontier.Path) -> Bool {
+		switch (left, right) {
+		case (.node(_,_,_), .node(_,_,_)) where left.totalWeight == right.totalWeight: return true
+		case (.end, .end): return true
+		default: return false
+		}
 	}
 }
 
 // MARK: - Frontier.Path Comparable
 extension Frontier.Path: Comparable {
-	static func < (left: Frontier.Path<N>, right: Frontier.Path<N>) -> Bool {
-		return left.total < right.total
+	static func < (left: Frontier.Path, right: Frontier.Path) -> Bool {
+		switch (left, right) {
+		case (.node(_,_,_), .node(_,_,_)) where left.totalWeight < right.totalWeight: return true
+		case (.end, .end): return true
+		default: return false
+		}
 	}
 }
 

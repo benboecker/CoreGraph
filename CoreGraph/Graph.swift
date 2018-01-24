@@ -8,19 +8,14 @@
 
 import Foundation
 
-
 /**
 This struct represents the graph used for calculating the shortest path between nodes.
 */
-public struct Graph<N: Hashable> {
+public struct Graph {
 	/// Stores the nodes that build the graph
-	//private(set) var nodes: [Node<N>] = []
+	private(set) var nodes: [Node: [Edge]] = [:]
 	
-	private(set) var nodes: [N: Node<N>] = [:]
-	
-	public init() {
-		
-	}
+	public init() {}
 }
 
 
@@ -33,13 +28,14 @@ public extension Graph {
 	- Parameter with: The value that will be stored in the new `Node`.
 	- Returns: A Result object containing either the newly created `Node` or an error that the node already exists.
 	*/
-	@discardableResult mutating func addNode(with value: N) -> Result<N> {
-		guard !hasNode(with: value) else { return .unexpected(.nodeAlreadyExists) }
+	@discardableResult mutating func addNode(with value: Int) -> Result<Int> {
+		let node = Node(with: value)
+		guard nodes[node] == nil else {
+			return .unexpected(.nodeAlreadyExists)
+		}
 		
-		let node = Node<N>(with: value)
-		//nodes.append(node)
-		nodes[value] = node
-		
+		nodes[node] = []
+
 		return .expected(value)
 	}
 	
@@ -53,15 +49,17 @@ public extension Graph {
 	- Parameter to: A value that should be stored in a node in the graph, acting as the **destination** of the new Edge.
 	- Parameter weight: The weight of the new edge. This is used for both the new edge and the reversed edge.
 	*/
-	mutating func addEdge(from source: N, to destination: N, weight: Double) {
+	mutating func addEdge(from source: Int, to destination: Int, weight: Double) {
 		guard let sourceNode = self[source],
 			let destinationNode = self[destination],
-			!sourceNode.hasEdge(to: destinationNode.value)
+			!node(sourceNode, hasEdgeTo: destinationNode),
+			!node(destinationNode, hasEdgeTo: sourceNode)
 			else {
 				return
 		}
 		
-		sourceNode.addEdge(to: destinationNode, weight: weight)
+		self.nodes[sourceNode]?.append(Edge(to: destinationNode, weight: weight))
+		self.nodes[destinationNode]?.append(Edge(to: sourceNode, weight: weight))
 	}
 	
 	/**
@@ -71,7 +69,7 @@ public extension Graph {
 	- Paramater to: The content value of the destination `Node`.
 	- Returns: A `Route` object containing the contents of each `Node` on the shortest path and the corresponding distances between each node.
 	*/
-	func shortestPath(from: N, to: N, minimum: Int = 100) -> Result<Route<N>> {
+	func shortestPath(from: Int, to: Int, minimum: Int = 100) -> Result<Route> {
 		guard let source = self[from] else {
 			return .unexpected(.startingPOINotFound)
 		}
@@ -80,35 +78,31 @@ public extension Graph {
 		}
 		
 		/// Represents the frontier. It is contains all paths along the graph.
-		let frontier = Frontier<N>()
+		let frontier = Frontier()
 		// Contains all paths that are shortest to the destination node of the path
-		let finalPaths = Frontier<N>()
+		let finalPaths = Frontier()
 
 		// The starting path in the frontier.
-		let startingPath: Frontier<N>.Path<N> = Frontier.Path(destination: source)
-		startingPath.total = 0
+		//let startingPath: Frontier<N>.Pa1th<N> = Frontier.Path(destination: source)
+		let startingPath = Frontier.Path.node(data: source, weight: 0, previous: Frontier.Path.end)
 		frontier.add(startingPath)
-		
-		// Counting how big the frontier gets for debugging purposes
-		var maxFrontierCount = 0
 		
 		// Calculate paths to all nodes while the frontier is not empty
 		while !frontier.isEmpty {
 			// Finding the current best path, which can't be nil.
-			let bestPath = frontier.getBestPath().data!
+			guard let bestPath = frontier.getBestPath().data,
+				let node = bestPath.destination,
+				let edges = self.nodes[node] else {
+					continue
+			}
 			
 			// For each edge in the best path, add a new path to the frontier
-			for edge in bestPath.destination.edges {
-				guard !bestPath.has(node: edge.destination) else {
+			for edge in edges {
+				guard !bestPath.contains(edge.destination) else {
 					continue
 				}
 				
-				let newPath = Frontier<N>.Path<N>(destination: edge.destination)
-				newPath.previous = bestPath
-				newPath.total = bestPath.total + edge.weight
-				
-				frontier.add(newPath)
-				maxFrontierCount = max(maxFrontierCount, frontier.paths.count)
+				frontier.add(bestPath.prepend(with: edge.destination, weight: edge.weight))
 			}
 			
 			// Removing the best path since it will be added to the final paths if it reaches the destination.
@@ -116,7 +110,7 @@ public extension Graph {
 			frontier.removeBestPath()
 			
 			// When the destination is reached, the current best path is added to the final paths array.
-			if bestPath.destination == destination {
+			if node == destination {
 				finalPaths.add(bestPath)
 				
 				if finalPaths.paths.count >= minimum {
@@ -124,8 +118,6 @@ public extension Graph {
 				}
 			}
 		}
-		
-		print(maxFrontierCount)
 		
 		// Getting the path to the destination node with the lowest total weight
 		if let path = finalPaths.getBestPath().data, let route = Route(path: path) {
@@ -152,8 +144,18 @@ extension Graph {
 	- Parameter with: A value to check for.
 	- Returns: A `Bool` indicating whether the graph has a `Node` that contains the given value.
 	*/
-	func hasNode(with value: N) -> Bool {
+	func hasNode(with value: Int) -> Bool {
 		return self[value] != nil
+	}
+	
+	func node(_ node: Node, hasEdgeTo anotherNode: Node) -> Bool {
+		if self.nodes[node] == nil {
+			return false
+		} else {
+			return nodes[node]?.contains(where: { edge -> Bool in
+				return edge.destination == anotherNode
+			}) ?? false
+		}
 	}
 }
 
@@ -162,15 +164,12 @@ extension Graph {
 	/**
 	Gets the first `Node` object found for the given value content.
  
-	- Parameter value: The value to look for in the nodes array.
+	- Parameter value: The value to look for in the nodes dictionary.
 	- Returns: The `Node?` object that contains the given value or nil if no node contains this value.
 	*/
-	internal subscript(value: N) -> Node<N>? {
+	internal subscript(value: Int) -> Node? {
 		get {
-			return nodes[value]
-//			return nodes.filter { node in
-//				return node.value == value
-//			}.first
+			return nodes.keys.filter{ $0.value == value }.first
 		}
 	}
 }
@@ -180,8 +179,12 @@ extension Graph: CustomStringConvertible {
 	public var description: String {
 		var result = ""
 		
-		for (_, node) in nodes {
+		for (node, edges) in nodes {
 			result += "\(node)\n"
+			for edge in edges {
+				result += "\t\(edge)\n"
+			}
+			result += "\n"
 		}
 		result.removeLast()
 

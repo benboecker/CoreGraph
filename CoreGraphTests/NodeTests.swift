@@ -22,7 +22,7 @@ class NodeTests: XCTestCase {
 	}
 	
 	func testHasEdge() {
-		let nodeA = Node(with: 2)
+		var nodeA = Node(with: 2)
 		let nodeB = Node(with: 3)
 		let nodeC = Node(with: 4)
 		
@@ -35,7 +35,7 @@ class NodeTests: XCTestCase {
 	}
 	
 	func testGetEdgeToAnotherNode() {
-		let nodeA = Node(with: 2)
+		var nodeA = Node(with: 2)
 		let nodeB = Node(with: 3)
 		let nodeC = Node(with: 4)
 		
@@ -54,7 +54,7 @@ class NodeTests: XCTestCase {
 	}
 	
 	func testAddEdge() {
-		let nodeA = Node(with: 2)
+		var nodeA = Node(with: 2)
 		let nodeB = Node(with: 3)
 		
 		nodeA.addEdge(to: nodeB, weight: 34)

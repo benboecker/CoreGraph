@@ -9,10 +9,10 @@
 import Foundation
 
 /// A route along a `Graph`. Consists of a array of content values of type `N` and corresponding distances between the waypoints.
-public struct Route<N: Equatable> {
+public struct Route {
 	
 	/// The waypoints making up the route and the corresponding distances in meters
-	public let waypoints: [(waypoint: N, distance: Double)]
+	public let waypoints: [(waypoint: Int, distance: Double)]
 	
 	/// Calculates the total distance of all waypoints
 	public var totalDistance: Double {
@@ -24,20 +24,19 @@ public struct Route<N: Equatable> {
 	/// - Returns: Either:
 	///    - A `Route` with the waypoints of the given path.
 	///    - `nil` when the path's total value is 0 or smaller.
-	internal init?(path: Frontier<N>.Path<N>) {
-		guard path.total > 0 && path.total != Double.infinity else {
+	internal init?(path: Frontier.Path) {
+		guard path.totalWeight > 0 && path.totalWeight != Double.infinity else {
 			return nil
 		}
 		
-		var waypoints: [(waypoint: N, distance: Double)] = []
-		
+		var waypoints: [(waypoint: Int, distance: Double)] = []
 		var p = path
-		let distance = path.total - (path.previous?.total ?? 0)
-		waypoints.append((path.destination.value, distance))
+		let distance = path.totalWeight - (path.previous?.totalWeight ?? 0)
+		waypoints.append((path.destination!.value, distance))
 
-		while let current = p.previous {
-			let distance = current.total - (current.previous?.total ?? 0)
-			waypoints.append((waypoint: current.destination.value, distance: distance))
+		while let current = p.previous, current != .end {
+			let distance = current.totalWeight - (current.previous?.totalWeight ?? 0)
+			waypoints.append((waypoint: current.destination!.value, distance: distance))
 			p = current
 		}
 		

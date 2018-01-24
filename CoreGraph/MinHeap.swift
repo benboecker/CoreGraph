@@ -37,7 +37,10 @@ extension MinHeap {
 	mutating func add(_ element: T) {
 		heap.append(element)
 
-		shiftUp(from: heap.count - 1)
+		_measure {
+			shiftUp(from: heap.count - 1)
+		}
+		
 	}
 	
 	mutating func remove() {
