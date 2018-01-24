@@ -14,7 +14,6 @@
 		B3A2DB06200687B300C2276D /* CoreGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = B3A2DAF8200687B200C2276D /* CoreGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B3A2DB152006882500C2276D /* Frontier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB0F2006881C00C2276D /* Frontier.swift */; };
 		B3A2DB172006882500C2276D /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB112006881D00C2276D /* Graph.swift */; };
-		B3A2DB182006882500C2276D /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB122006881D00C2276D /* Route.swift */; };
 		B3A2DB192006882500C2276D /* Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB132006882100C2276D /* Edge.swift */; };
 		B3A2DB1A2006882500C2276D /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB142006882400C2276D /* Node.swift */; };
 		B3A2DB1D2006887200C2276D /* GraphTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB1B2006887000C2276D /* GraphTest.swift */; };
@@ -27,6 +26,7 @@
 		B3A2DB3220091A5900C2276D /* ArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB3120091A5900C2276D /* ArrayTests.swift */; };
 		B3A2DB342009203900C2276D /* FrontierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB332009203900C2276D /* FrontierTests.swift */; };
 		B3A2DB362009204900C2276D /* FrontierPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB352009204900C2276D /* FrontierPathTests.swift */; };
+		B3E8DFA62018F9750000E9DB /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8DFA52018F9750000E9DB /* Path.swift */; };
 		B3F53D4E2015E19600359ED0 /* MinHeap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4D2015E19600359ED0 /* MinHeap.swift */; };
 		B3F53D502015E32500359ED0 /* MinHeapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F53D4F2015E32500359ED0 /* MinHeapTests.swift */; };
 /* End PBXBuildFile section */
@@ -52,7 +52,6 @@
 		B3A2DB05200687B300C2276D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3A2DB0F2006881C00C2276D /* Frontier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Frontier.swift; sourceTree = "<group>"; };
 		B3A2DB112006881D00C2276D /* Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
-		B3A2DB122006881D00C2276D /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		B3A2DB132006882100C2276D /* Edge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Edge.swift; sourceTree = "<group>"; };
 		B3A2DB142006882400C2276D /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		B3A2DB1B2006887000C2276D /* GraphTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphTest.swift; sourceTree = "<group>"; };
@@ -65,6 +64,7 @@
 		B3A2DB3120091A5900C2276D /* ArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTests.swift; sourceTree = "<group>"; };
 		B3A2DB332009203900C2276D /* FrontierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontierTests.swift; sourceTree = "<group>"; };
 		B3A2DB352009204900C2276D /* FrontierPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontierPathTests.swift; sourceTree = "<group>"; };
+		B3E8DFA52018F9750000E9DB /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
 		B3F53D4D2015E19600359ED0 /* MinHeap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinHeap.swift; sourceTree = "<group>"; };
 		B3F53D4F2015E32500359ED0 /* MinHeapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinHeapTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,7 +114,7 @@
 				B3A2DB142006882400C2276D /* Node.swift */,
 				B3A2DB132006882100C2276D /* Edge.swift */,
 				B3A2DB0F2006881C00C2276D /* Frontier.swift */,
-				B3A2DB122006881D00C2276D /* Route.swift */,
+				B3E8DFA52018F9750000E9DB /* Path.swift */,
 				B3A2DB2720068A2000C2276D /* Result.swift */,
 				B3A2DB2820068A2A00C2276D /* GraphError.swift */,
 				B3A2DB2B20068B0E00C2276D /* Array-Extensions.swift */,
@@ -256,13 +256,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3A2DB172006882500C2276D /* Graph.swift in Sources */,
-				B3A2DB182006882500C2276D /* Route.swift in Sources */,
 				B3A2DB152006882500C2276D /* Frontier.swift in Sources */,
 				B3F53D4E2015E19600359ED0 /* MinHeap.swift in Sources */,
 				B3A2DB1A2006882500C2276D /* Node.swift in Sources */,
 				B3A2DB2C20068B0E00C2276D /* Array-Extensions.swift in Sources */,
 				B3A2DB2A20068A2B00C2276D /* GraphError.swift in Sources */,
 				B3A2DB2920068A2B00C2276D /* Result.swift in Sources */,
+				B3E8DFA62018F9750000E9DB /* Path.swift in Sources */,
 				B3A2DB192006882500C2276D /* Edge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

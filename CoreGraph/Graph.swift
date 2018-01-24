@@ -69,7 +69,7 @@ public extension Graph {
 	- Paramater to: The content value of the destination `Node`.
 	- Returns: A `Route` object containing the contents of each `Node` on the shortest path and the corresponding distances between each node.
 	*/
-	func shortestPath(from: Int, to: Int, minimum: Int = 100) -> Result<Route> {
+	func shortestPath(from: Int, to: Int, minimum: Int = 100) -> Result<Path> {
 		guard let source = self[from] else {
 			return .unexpected(.startingPOINotFound)
 		}
@@ -83,8 +83,7 @@ public extension Graph {
 		let finalPaths = Frontier()
 
 		// The starting path in the frontier.
-		//let startingPath: Frontier<N>.Pa1th<N> = Frontier.Path(destination: source)
-		let startingPath = Frontier.Path.node(data: source, weight: 0, previous: Frontier.Path.end)
+		let startingPath = Path.node(data: source, weight: 0, previous: .end)
 		frontier.add(startingPath)
 		
 		// Calculate paths to all nodes while the frontier is not empty
@@ -120,8 +119,8 @@ public extension Graph {
 		}
 		
 		// Getting the path to the destination node with the lowest total weight
-		if let path = finalPaths.getBestPath().data, let route = Route(path: path) {
-			return .expected(route)
+		if let path = finalPaths.getBestPath().data {
+			return .expected(path)
 		} else {
 			return .unexpected(.shortestPathNotFound)
 		}

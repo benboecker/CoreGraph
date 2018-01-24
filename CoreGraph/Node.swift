@@ -12,7 +12,7 @@ import Foundation
 Class to represent a node in the undirected graph used in the dijkstra algorithm.
 This class stores it's value as a generic parameter that has the requirement to conform to the `Equatable` protocol
 */
-struct Node {
+public struct Node {
 	/// Represents the value stored in the node. Must conform to `Equatable`.
 	fileprivate(set) var value: Int
 	/// Represents the edges from this node to other nodes.
@@ -43,8 +43,6 @@ extension Node {
 		let edge = Edge(to: destination, weight: weight)
 		edges.append(edge)
 	}
-	
-	
 }
 
 // MARK: - Internal methods
@@ -77,7 +75,7 @@ extension Node {
 
 // MARK: - CustomStringConvertible
 extension Node: CustomStringConvertible {
-	var description: String {
+	public var description: String {
 		var result = "N[\(String(describing: value))]"
 		
 		for edge in edges {
@@ -90,7 +88,7 @@ extension Node: CustomStringConvertible {
 
 // MARK: - Equatable
 extension Node: Equatable {
-	static func ==(left: Node, right: Node) -> Bool {
+	public static func ==(left: Node, right: Node) -> Bool {
 		return left.value == right.value
 	}
 }
@@ -98,7 +96,7 @@ extension Node: Equatable {
 
 // MARK: - Hashable
 extension Node: Hashable {
-	var hashValue: Int {
+	public var hashValue: Int {
 		return self.value.hashValue
 	}
 }
