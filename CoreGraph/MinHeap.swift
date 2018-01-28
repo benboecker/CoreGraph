@@ -37,21 +37,19 @@ extension MinHeap {
 	mutating func add(_ element: T) {
 		heap.append(element)
 
-		_measure {
-			shiftUp(from: heap.count - 1)
-		}
-		
+		shiftUp(from: heap.count - 1)
 	}
 	
-	mutating func remove() {
-		guard !isEmpty else { return }
-		heap.remove(at: 0)
-		guard !isEmpty else { return }
+	mutating func remove() -> T? {
+		guard !isEmpty else { return nil }
+		let element = heap.remove(at: 0)
+		guard !isEmpty else { return nil }
 		
 		heap.insert(heap[count - 1], at: 0)
 		heap.remove(at: count - 1)
 		
 		shiftDown(from: 0)
+		return element
 	}
 	
 	func peek() -> T? {

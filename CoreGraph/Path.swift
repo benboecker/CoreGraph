@@ -8,17 +8,17 @@
 
 import Foundation
 
-public enum Path {
+public enum Path<Element: Equatable> {
 	case end
-	indirect case node(data: Node, weight: Double, previous: Path)
+	indirect case node(data: Element, weight: Double, previous: Path)
 }
 
 extension Path {
-	func prepend(with data: Node, weight: Double) -> Path {
+	func prepend(with data: Element, weight: Double) -> Path {
 		return .node(data: data, weight: weight, previous: self)
 	}
 	
-	func contains(_ element: Node) -> Bool {
+	func contains(_ element: Element) -> Bool {
 		if case let .node(data, _, previous) = self {
 			if data == element {
 				return true
@@ -30,7 +30,7 @@ extension Path {
 		}
 	}
 	
-	var destination: Node? {
+	var destination: Element? {
 		if case .node(let destination, _, _) = self {
 			return destination
 		} else {
@@ -62,7 +62,7 @@ extension Path {
 		}
 	}
 	
-	var route: [(Node, Double)] {
+	var route: [(Element, Double)] {
 		if case let .node(node, weight, previous) = self {
 			return [(node, weight)] + previous.route
 		} else {
@@ -71,20 +71,20 @@ extension Path {
 	}
 }
 
-// MARK: - Frontier.Path CustomStringConvertible
+// MARK: - Path CustomStringConvertible
 extension Path: CustomStringConvertible {
 	public var description: String {
 		return route.reversed().map { (node, weight) -> String in
 			if weight == 0 {
-				return "[\(node.value)]"
+				return "[\(node)]"
 			} else {
-				return " —\(weight)— [\(node.value)]"
+				return " —\(weight)— [\(node)]"
 			}
 		}.joined()
 	}
 }
 
-// MARK: - Frontier.Path Equatable
+// MARK: - Path Equatable
 extension Path: Equatable {
 	public static func ==(left: Path, right: Path) -> Bool {
 		switch (left, right) {
@@ -95,7 +95,7 @@ extension Path: Equatable {
 	}
 }
 
-// MARK: - Frontier.Path Comparable
+// MARK: - Path Comparable
 extension Path: Comparable {
 	public static func < (left: Path, right: Path) -> Bool {
 		switch (left, right) {

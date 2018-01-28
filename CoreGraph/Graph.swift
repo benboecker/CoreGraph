@@ -11,9 +11,9 @@ import Foundation
 /**
 This struct represents the graph used for calculating the shortest path between nodes.
 */
-public struct Graph {
+public struct Graph<Element: Hashable> {
 	/// Stores the nodes that build the graph
-	private(set) var nodes: [Node: [Edge]] = [:]
+	private(set) var nodes: [Element: [Edge<Element>]] = [:]
 	
 	public init() {}
 }
@@ -28,13 +28,12 @@ public extension Graph {
 	- Parameter with: The value that will be stored in the new `Node`.
 	- Returns: A Result object containing either the newly created `Node` or an error that the node already exists.
 	*/
-	@discardableResult mutating func addNode(with value: Int) -> Result<Int> {
-		let node = Node(with: value)
-		guard nodes[node] == nil else {
+	@discardableResult mutating func addNode(with value: Element) -> Result<Element> {
+		guard nodes[value] == nil else {
 			return .unexpected(.nodeAlreadyExists)
 		}
 		
-		nodes[node] = []
+		nodes[value] = []
 
 		return .expected(value)
 	}
@@ -49,17 +48,15 @@ public extension Graph {
 	- Parameter to: A value that should be stored in a node in the graph, acting as the **destination** of the new Edge.
 	- Parameter weight: The weight of the new edge. This is used for both the new edge and the reversed edge.
 	*/
-	mutating func addEdge(from source: Int, to destination: Int, weight: Double) {
-		guard let sourceNode = self[source],
-			let destinationNode = self[destination],
-			!node(sourceNode, hasEdgeTo: destinationNode),
-			!node(destinationNode, hasEdgeTo: sourceNode)
+	mutating func addEdge(from source: Element, to destination: Element, weight: Double) {
+		guard !node(source, hasEdgeTo: destination),
+			!node(destination, hasEdgeTo: source)
 			else {
 				return
 		}
 		
-		self.nodes[sourceNode]?.append(Edge(to: destinationNode, weight: weight))
-		self.nodes[destinationNode]?.append(Edge(to: sourceNode, weight: weight))
+		self.nodes[source]?.append(Edge(to: destination, weight: weight))
+		self.nodes[destination]?.append(Edge(to: source, weight: weight))
 	}
 	
 	/**
@@ -69,21 +66,21 @@ public extension Graph {
 	- Paramater to: The content value of the destination `Node`.
 	- Returns: A `Route` object containing the contents of each `Node` on the shortest path and the corresponding distances between each node.
 	*/
-	func shortestPath(from: Int, to: Int, minimum: Int = 100) -> Result<Path> {
-		guard let source = self[from] else {
+	func shortestPath(from: Element, to: Element, minimum: Int = 100) -> Result<Path<Element>> {
+		guard self[from] != nil else {
 			return .unexpected(.startingPOINotFound)
 		}
-		guard let destination = self[to] else {
+		guard self[to] != nil else {
 			return .unexpected(.destinationPOINotFound)
 		}
 		
 		/// Represents the frontier. It is contains all paths along the graph.
-		let frontier = Frontier()
+		let frontier = Frontier<Element>()
 		// Contains all paths that are shortest to the destination node of the path
-		let finalPaths = Frontier()
+		let finalPaths = Frontier<Element>()
 
 		// The starting path in the frontier.
-		let startingPath = Path.node(data: source, weight: 0, previous: .end)
+		let startingPath = Path.node(data: from, weight: 0, previous: .end)
 		frontier.add(startingPath)
 		
 		// Calculate paths to all nodes while the frontier is not empty
@@ -91,7 +88,7 @@ public extension Graph {
 			// Finding the current best path, which can't be nil.
 			guard let bestPath = frontier.getBestPath().data,
 				let node = bestPath.destination,
-				let edges = self.nodes[node] else {
+				let edges = nodes[node] else {
 					continue
 			}
 			
@@ -109,7 +106,7 @@ public extension Graph {
 			frontier.removeBestPath()
 			
 			// When the destination is reached, the current best path is added to the final paths array.
-			if node == destination {
+			if node == to {
 				finalPaths.add(bestPath)
 				
 				if finalPaths.paths.count >= minimum {
@@ -143,11 +140,11 @@ extension Graph {
 	- Parameter with: A value to check for.
 	- Returns: A `Bool` indicating whether the graph has a `Node` that contains the given value.
 	*/
-	func hasNode(with value: Int) -> Bool {
+	func hasNode(with value: Element) -> Bool {
 		return self[value] != nil
 	}
 	
-	func node(_ node: Node, hasEdgeTo anotherNode: Node) -> Bool {
+	func node(_ node: Element, hasEdgeTo anotherNode: Element) -> Bool {
 		if self.nodes[node] == nil {
 			return false
 		} else {
@@ -166,9 +163,9 @@ extension Graph {
 	- Parameter value: The value to look for in the nodes dictionary.
 	- Returns: The `Node?` object that contains the given value or nil if no node contains this value.
 	*/
-	internal subscript(value: Int) -> Node? {
+	internal subscript(value: Element) -> [Edge<Element>]? {
 		get {
-			return nodes.keys.filter{ $0.value == value }.first
+			return nodes[value]
 		}
 	}
 }

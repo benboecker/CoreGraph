@@ -15,9 +15,7 @@
 		B3A2DB152006882500C2276D /* Frontier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB0F2006881C00C2276D /* Frontier.swift */; };
 		B3A2DB172006882500C2276D /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB112006881D00C2276D /* Graph.swift */; };
 		B3A2DB192006882500C2276D /* Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB132006882100C2276D /* Edge.swift */; };
-		B3A2DB1A2006882500C2276D /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB142006882400C2276D /* Node.swift */; };
 		B3A2DB1D2006887200C2276D /* GraphTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB1B2006887000C2276D /* GraphTest.swift */; };
-		B3A2DB1E2006887200C2276D /* NodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB1C2006887100C2276D /* NodeTests.swift */; };
 		B3A2DB2920068A2B00C2276D /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB2720068A2000C2276D /* Result.swift */; };
 		B3A2DB2A20068A2B00C2276D /* GraphError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB2820068A2A00C2276D /* GraphError.swift */; };
 		B3A2DB2C20068B0E00C2276D /* Array-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB2B20068B0E00C2276D /* Array-Extensions.swift */; };
@@ -53,9 +51,7 @@
 		B3A2DB0F2006881C00C2276D /* Frontier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Frontier.swift; sourceTree = "<group>"; };
 		B3A2DB112006881D00C2276D /* Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		B3A2DB132006882100C2276D /* Edge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Edge.swift; sourceTree = "<group>"; };
-		B3A2DB142006882400C2276D /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		B3A2DB1B2006887000C2276D /* GraphTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphTest.swift; sourceTree = "<group>"; };
-		B3A2DB1C2006887100C2276D /* NodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeTests.swift; sourceTree = "<group>"; };
 		B3A2DB2720068A2000C2276D /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		B3A2DB2820068A2A00C2276D /* GraphError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphError.swift; sourceTree = "<group>"; };
 		B3A2DB2B20068B0E00C2276D /* Array-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array-Extensions.swift"; sourceTree = "<group>"; };
@@ -111,7 +107,6 @@
 			children = (
 				B3A2DAF8200687B200C2276D /* CoreGraph.h */,
 				B3A2DB112006881D00C2276D /* Graph.swift */,
-				B3A2DB142006882400C2276D /* Node.swift */,
 				B3A2DB132006882100C2276D /* Edge.swift */,
 				B3A2DB0F2006881C00C2276D /* Frontier.swift */,
 				B3E8DFA52018F9750000E9DB /* Path.swift */,
@@ -131,7 +126,6 @@
 				B3A2DB05200687B300C2276D /* Info.plist */,
 				B3A2DB1B2006887000C2276D /* GraphTest.swift */,
 				B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */,
-				B3A2DB1C2006887100C2276D /* NodeTests.swift */,
 				B3A2DB2D200913B900C2276D /* ResultTests.swift */,
 				B3A2DB2F200913C200C2276D /* EdgeTests.swift */,
 				B3A2DB3120091A5900C2276D /* ArrayTests.swift */,
@@ -258,7 +252,6 @@
 				B3A2DB172006882500C2276D /* Graph.swift in Sources */,
 				B3A2DB152006882500C2276D /* Frontier.swift in Sources */,
 				B3F53D4E2015E19600359ED0 /* MinHeap.swift in Sources */,
-				B3A2DB1A2006882500C2276D /* Node.swift in Sources */,
 				B3A2DB2C20068B0E00C2276D /* Array-Extensions.swift in Sources */,
 				B3A2DB2A20068A2B00C2276D /* GraphError.swift in Sources */,
 				B3A2DB2920068A2B00C2276D /* Result.swift in Sources */,
@@ -272,7 +265,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3A2DB1D2006887200C2276D /* GraphTest.swift in Sources */,
-				B3A2DB1E2006887200C2276D /* NodeTests.swift in Sources */,
 				B3742122200CE56B00BEC17C /* GraphPerformanceTests.swift in Sources */,
 				B3F53D502015E32500359ED0 /* MinHeapTests.swift in Sources */,
 				B3A2DB2E200913B900C2276D /* ResultTests.swift in Sources */,

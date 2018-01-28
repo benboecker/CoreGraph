@@ -10,8 +10,8 @@ import Foundation
 
 
 
-class Frontier {
-	var paths = MinHeap<Path>()
+class Frontier<Element: Equatable> {
+	var paths = MinHeap<Path<Element>>()
 }
 
 // MARK: - Public methods and properties
@@ -24,23 +24,26 @@ extension Frontier {
 		paths.removeAll()
 	}
 	
-	func getBestPath() -> Result<Path> {
+	func getBestPath() -> Result<Path<Element>> {
 		guard !isEmpty else { return .unexpected(.frontierIsEmpty) }
 
 		return .expected(paths[0])
 	}
 	
-	func add(_ path: Path) {
+	func add(_ path: Path<Element>) {
 		paths.add(path)
 	}
 	
-	@discardableResult func removeBestPath() -> Result<Int> {
+	@discardableResult func removeBestPath() -> Result<Path<Element>> {
 		guard !paths.isEmpty else {
 			return .unexpected(GraphError.elementNotRemoved)
 		}
-		paths.remove()
+
+		guard let removedPath = paths.remove() else {
+			return .unexpected(GraphError.elementNotRemoved)
+		}
 		
-		return .expected(0)
+		return .expected(removedPath)
 	}
 }
 

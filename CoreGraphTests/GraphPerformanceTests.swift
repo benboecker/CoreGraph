@@ -15,22 +15,26 @@ import XCTest
 
 class GraphPerformanceTests: XCTestCase {
 
-	var graph: Graph!
+	var graph: Graph<Int>!
 
 	override func setUp() {
 		super.setUp()
 
-		graph = Graph()
+		graph = Graph<Int>()
 
 		loadRoutingData()
 
 	}
 
 	func testPerformance() {
-//		_measure("Westend -> Sammelplatz 1") {
-//			let shortestPath = graph.shortestPath(from: -35330, to: -39502, minimum: 1)
-//			XCTAssertTrue(shortestPath.isExpected)
-//		}
+		_measure("Westend -> Sammelplatz 1") {
+			let shortestPath = graph.shortestPath(from: -35330, to: -39502, minimum: 1)
+			XCTAssertTrue(shortestPath.isExpected)
+
+			if shortestPath.isUnexpected {
+				print(shortestPath.error!)
+			}
+		}
 //		_measure("Westend -> Eddy") {
 //			let shortestPath = graph.shortestPath(from: -35330, to: -34774, minimum: 1)
 //			XCTAssertTrue(shortestPath.isExpected)
@@ -55,7 +59,7 @@ class GraphPerformanceTests: XCTestCase {
 //			let shortestPath = graph.shortestPath(from: -39504, to: -35330, minimum: 1)
 //			XCTAssertTrue(shortestPath.isExpected)
 //		}
-
+//
 //		_measure("Westend -> Audimax") {
 //			let shortestPath = graph.shortestPath(from: -39504, to: -35516, minimum: 1)
 //			XCTAssertTrue(shortestPath.isExpected)
@@ -111,5 +115,6 @@ func _measure(_ title: String? = nil, call: () -> Void) {
 	}
 	print("--------------------------------------------")
 }
+
 
 
