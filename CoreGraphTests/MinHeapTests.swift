@@ -12,27 +12,26 @@ import XCTest
 
 class MinHeapTests: XCTestCase {
 	func testInsert() {
-		var minimumArray = MinHeap<Int>()
+		var minHeap = MinHeap<Int>()
 
-		minimumArray.add(5)
-		minimumArray.add(3)
-		minimumArray.add(8)
-		minimumArray.add(4)
-		minimumArray.add(6)
+		minHeap.add(5)
+		minHeap.add(3)
+		minHeap.add(8)
+		minHeap.add(4)
+		minHeap.add(6)
 
-		XCTAssertEqual(minimumArray[0], 3)
-		XCTAssertEqual(minimumArray[1], 4)
-		XCTAssertEqual(minimumArray[2], 8)
-		XCTAssertEqual(minimumArray[3], 5)
-		XCTAssertEqual(minimumArray[4], 6)
+		XCTAssertEqual(minHeap[0], 3)
+		XCTAssertEqual(minHeap[1], 4)
+		XCTAssertEqual(minHeap[2], 8)
+		XCTAssertEqual(minHeap[3], 5)
+		XCTAssertEqual(minHeap[4], 6)
 	}
 	
-	func testInsert2() {
+	func testInsertFromArray() {
 		var minHeap: MinHeap<Int> = [1, 3, 6, 5, 9, 8]
 		
 		minHeap.add(-2)
 		
-
 		XCTAssertEqual(minHeap[0], -2)
 		XCTAssertEqual(minHeap[1], 3)
 		XCTAssertEqual(minHeap[2], 1)
@@ -42,20 +41,24 @@ class MinHeapTests: XCTestCase {
 		XCTAssertEqual(minHeap[6], 6)
 	}
 	
-	func testMinimumRemove() {
-		var minimumArray: MinHeap<Int> = [5, 3, 8, 4, 6]
+	func testRemove() {
 		
-		XCTAssertEqual(minimumArray[0], 3)
-		XCTAssertEqual(minimumArray[1], 4)
-		XCTAssertEqual(minimumArray[2], 8)
-		XCTAssertEqual(minimumArray[3], 5)
-		XCTAssertEqual(minimumArray[4], 6)
+		var minHeap = MinHeap<Int>()
+		XCTAssertNil(minHeap.remove())
+
+		minHeap = [5, 3, 8, 4, 6]
 		
-		minimumArray.remove()
+		XCTAssertEqual(minHeap[0], 3)
+		XCTAssertEqual(minHeap[1], 4)
+		XCTAssertEqual(minHeap[2], 8)
+		XCTAssertEqual(minHeap[3], 5)
+		XCTAssertEqual(minHeap[4], 6)
 		
-		XCTAssertEqual(minimumArray[0], 4)
-		XCTAssertEqual(minimumArray[1], 5)
-		XCTAssertEqual(minimumArray[2], 8)
-		XCTAssertEqual(minimumArray[3], 6)
+		minHeap.remove()
+		
+		XCTAssertEqual(minHeap[0], 4)
+		XCTAssertEqual(minHeap[1], 5)
+		XCTAssertEqual(minHeap[2], 8)
+		XCTAssertEqual(minHeap[3], 6)
 	}
 }

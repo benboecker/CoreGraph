@@ -9,8 +9,11 @@
 import Foundation
 
 /**
-This struct acts as the connection between two nodes. It has a weight that represents the distance between these nodes. 
-The `Edge` struct only stores the destination node as itself is stored in the source node.
+This struct acts as the connection between two nodes.
+It has a weight that represents the distance between these nodes.
+The `Edge` struct only stores the destination node as itself is stored in the graph's `nodes` dictionary with the source node as key for all edges departing from it.
+
+The Edge is generic over the node element's type.
 */
 public struct Edge<Element> {
 	/// The destination of this `Edge`.
@@ -24,14 +27,5 @@ public struct Edge<Element> {
 	init(to destination: Element, weight: Double) {
 		self.weight = weight
 		self.destination = destination
-	}
-}
-
-
-
-// MARK: - CustomStringConvertible
-extension Edge: CustomStringConvertible {
-	public var description: String {
-		return "—\(weight)— [\(destination)]"
 	}
 }

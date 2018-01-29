@@ -23,8 +23,7 @@ class GraphTest: XCTestCase {
 		}
 	}
 
-
-	func testBuildingGraph() {
+	func testBuildingGraphWithInts() {
 		var graph = Graph<Int>()
 
 		let nodeA = graph.addNode(with: 1).data!
@@ -57,18 +56,22 @@ class GraphTest: XCTestCase {
 		let nodeB = graph.addNode(with: 2).data!
 		let nodeC = graph.addNode(with: 3).data!
 
-		let testA = graph[1]
-		let testB = graph[2]
-		let testC = graph[3]
+		graph.addEdge(from: 1, to: 2, weight: 10)
+		graph.addEdge(from: 1, to: 3, weight: 10)
+		
+		let testA = graph[nodeA]
+		let testB = graph[nodeB]
+		let testC = graph[nodeC]
 		let testD = graph[4]
 
-//		XCTAssertEqual(nodeA, testA!.value)
-//		XCTAssertEqual(nodeB, testB!.value)
-//		XCTAssertEqual(nodeC, testC!.value)
+		XCTAssertEqual(testA?.count, 2)
+		XCTAssertEqual(testB?.count, 1)
+		XCTAssertEqual(testC?.count, 1)
+		XCTAssertEqual(testA?.first?.weight, 10)
 		XCTAssertNil(testD)
 	}
 
-	func testShortestRouteInt() {
+	func testShortestRouteWithInts() {
 		var graph = Graph<Int>()
 		
 		graph.addNode(with: 1)
@@ -96,7 +99,7 @@ class GraphTest: XCTestCase {
 		}
 	}
 	
-	func testShortestRoute1() {
+	func testShortestRouteWithSrings() {
 		var graph = Graph<String>()
 
 		graph.addNode(with: "A") // A
@@ -115,20 +118,45 @@ class GraphTest: XCTestCase {
 
 		XCTAssertTrue(shortestPathResult.isExpected)
 		XCTAssertNotNil(shortestPathResult.data)
-//		XCTAssertEqual(shortestPathResult.data?.totalDistance, 12)
+		XCTAssertEqual(shortestPathResult.data?.totalWeight, 12)
 
 		XCTAssertEqual("\(shortestPathResult.data!)", "[A] —4.0— [D] —8.0— [E]")
 
-//		XCTAssertEqual(shortestPathResult.data?.waypoints.count, 3)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[0].waypoint, "A")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[0].distance, 0)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[1].waypoint, "D")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[1].distance, 4)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[2].waypoint, "E")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[2].distance, 8)
+		XCTAssertEqual(shortestPathResult.data?.nodeData.count, 3)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].node, "A")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].weight, 0)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].node, "D")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].weight, 4)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].node, "E")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].weight, 8)
+	}
+	
+	func testSackgasse() {
+		var graph = Graph<Int>()
+		
+		graph.addNode(with: 1)
+		graph.addNode(with: 2)
+		graph.addNode(with: 3)
+		graph.addNode(with: 4)
+		graph.addNode(with: 5)
+		
+		graph.addEdge(from: 1, to: 2, weight: 1)
+		graph.addEdge(from: 1, to: 3, weight: 2)
+		graph.addEdge(from: 2, to: 4, weight: 1)
+		graph.addEdge(from: 2, to: 5, weight: 2)
+		graph.addEdge(from: 3, to: 5, weight: 2)
+		
+		let shortestPathResult = graph.shortestPath(from: 1, to: 5)
+		
+		XCTAssertTrue(shortestPathResult.isExpected)
+		XCTAssertNotNil(shortestPathResult.data)
+		XCTAssertEqual(shortestPathResult.data?.totalWeight, 3)
+		
+		XCTAssertEqual("\(shortestPathResult.data!)", "[1] —1.0— [2] —2.0— [5]")
+
 	}
 
-	func testCircularGraph() {
+	func testCircularGraphWithInts() {
 		var graph = Graph<Int>()
 
 		graph.addNode(with: 1)
@@ -154,7 +182,7 @@ class GraphTest: XCTestCase {
 		}
 	}
 
-	func testCircularGraph2() {
+	func testCircularGraphWithInts2() {
 		var graph = Graph<Int>()
 
 		graph.addNode(with: 1)
@@ -166,7 +194,7 @@ class GraphTest: XCTestCase {
 		graph.addEdge(from: 2, to: 3, weight: 2)
 		graph.addEdge(from: 3, to: 4, weight: 3)
 		graph.addEdge(from: 4, to: 1, weight: 4)
-		graph.addEdge(from: 3, to: 1, weight: 1)
+		graph.addEdge(from: 3, to: 1, weight: 4)
 		graph.addEdge(from: 4, to: 2, weight: 1)
 
 		let result = graph.shortestPath(from: 1, to: 3)
@@ -174,7 +202,7 @@ class GraphTest: XCTestCase {
 		XCTAssertTrue(result.isExpected)
 
 		result.onExpected { route in
-			//XCTAssertEqual("\(route)", "[1] —1.0— [2] —2.0— [3]")
+			XCTAssertEqual("\(route)", "[1] —1.0— [2] —2.0— [3]")
 		}
 
 		result.onUnexpected { error in
@@ -182,7 +210,7 @@ class GraphTest: XCTestCase {
 		}
 	}
 
-	func testShortestRoute2() {
+	func testShortestRouteWithStrings2() {
 		var graph = Graph<String>()
 
 		graph.addNode(with: "KA") // A
@@ -208,19 +236,19 @@ class GraphTest: XCTestCase {
 		let shortestPathResult = graph.shortestPath(from: "KA", to: "MI")
 
 		XCTAssertTrue(shortestPathResult.isExpected)
-		
-//		XCTAssertEqual(shortestPathResult.data?.waypoints.count, 4)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[0].waypoint, "KA")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[0].distance, 0)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[1].waypoint, "OL")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[1].distance, 231)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[2].waypoint, "KS")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[2].distance, 117)
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[3].waypoint, "MI")
-//		XCTAssertEqual(shortestPathResult.data?.waypoints[3].distance, 190)
+
+		XCTAssertEqual(shortestPathResult.data?.nodeData.count, 4)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].node, "KA")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].weight, 0)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].node, "OL")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].weight, 231)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].node, "KS")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].weight, 117)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[3].node, "MI")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[3].weight, 190)
 	}
 
-	func testShortestRouteCity() {
+	func testShortestRouteWithStructs() {
 		let muenster = City(name: "Münster", population: 310_000)
 		let bielefeld = City(name: "Bielefeld", population: 300_000)
 		let cologne = City(name: "Köln", population: 1_000_000)
@@ -248,30 +276,30 @@ class GraphTest: XCTestCase {
 		let shortestPathResult = graph.shortestPath(from: rheine, to: cologne)
 
 		XCTAssertTrue(shortestPathResult.isExpected)
-//		shortestPathResult.onExpected { route in
-//			XCTAssertEqual(route.totalDistance, 220.0)
-//			XCTAssertEqual(route.waypoints[0].waypoint.name, "Rheine")
-//			XCTAssertEqual(route.waypoints[1].waypoint.name, "Münster")
-//			XCTAssertEqual(route.waypoints[2].waypoint.name, "Düsseldorf")
-//			XCTAssertEqual(route.waypoints[3].waypoint.name, "Köln")
-//			XCTAssertEqual(route.waypoints[0].distance, 0.0)
-//			XCTAssertEqual(route.waypoints[1].distance, 50.0)
-//			XCTAssertEqual(route.waypoints[2].distance, 130.0)
-//			XCTAssertEqual(route.waypoints[3].distance, 40.0)
-//		}
+		shortestPathResult.onExpected { path in
+			XCTAssertEqual(path.totalWeight, 220.0)
+			XCTAssertEqual(path.nodeData[0].node.name, "Rheine")
+			XCTAssertEqual(path.nodeData[1].node.name, "Münster")
+			XCTAssertEqual(path.nodeData[2].node.name, "Düsseldorf")
+			XCTAssertEqual(path.nodeData[3].node.name, "Köln")
+			XCTAssertEqual(path.nodeData[0].weight, 0.0)
+			XCTAssertEqual(path.nodeData[1].weight, 50.0)
+			XCTAssertEqual(path.nodeData[2].weight, 130.0)
+			XCTAssertEqual(path.nodeData[3].weight, 40.0)
+		}
 
 		let shortestPathResult2 = graph.shortestPath(from: duesseldorf, to: bielefeld)
-		
+
 		XCTAssertTrue(shortestPathResult2.isExpected)
-//		shortestPathResult2.onExpected { route in
-//			XCTAssertEqual(route.totalDistance, 170.0)
-//			XCTAssertEqual(route.waypoints[0].waypoint.name, "Düsseldorf")
-//			XCTAssertEqual(route.waypoints[1].waypoint.name, "Dortmund")
-//			XCTAssertEqual(route.waypoints[2].waypoint.name, "Bielefeld")
-//			XCTAssertEqual(route.waypoints[0].distance, 0.0)
-//			XCTAssertEqual(route.waypoints[1].distance, 70.0)
-//			XCTAssertEqual(route.waypoints[2].distance, 100.0)
-//		}
+		shortestPathResult2.onExpected { path in
+			XCTAssertEqual(path.totalWeight, 170.0)
+			XCTAssertEqual(path.nodeData[0].node.name, "Düsseldorf")
+			XCTAssertEqual(path.nodeData[1].node.name, "Dortmund")
+			XCTAssertEqual(path.nodeData[2].node.name, "Bielefeld")
+			XCTAssertEqual(path.nodeData[0].weight, 0.0)
+			XCTAssertEqual(path.nodeData[1].weight, 70.0)
+			XCTAssertEqual(path.nodeData[2].weight, 100.0)
+		}
 	}
 
 	func testEmptyGraph() {
@@ -310,6 +338,19 @@ class GraphTest: XCTestCase {
 
 		let shortestPathResult2 = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult2.isUnexpected)
+	}
+	
+	func testHasEdge() {
+		var graph = Graph<String>()
+		graph.addNode(with: "A")
+		graph.addNode(with: "B")
+		graph.addEdge(from: "A", to: "B", weight: 1)
+
+		XCTAssertTrue(graph.node("A", hasEdgeTo: "B"))
+		XCTAssertTrue(graph.node("B", hasEdgeTo: "A"))
+		XCTAssertFalse(graph.node("A", hasEdgeTo: "A"))
+		XCTAssertFalse(graph.node("A", hasEdgeTo: "C"))
+		XCTAssertFalse(graph.node("C", hasEdgeTo: "C"))
 	}
 }
 

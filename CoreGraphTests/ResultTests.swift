@@ -22,9 +22,6 @@ class ResultTests: XCTestCase {
 		result.onExpected { (string) in
 			XCTAssertEqual(string, "Test")
 		}
-		result.onUnexpected { (_) in
-			XCTFail()
-		}
 		
 		XCTAssertNotNil(result.data)
 		XCTAssertNil(result.error)
@@ -39,9 +36,6 @@ class ResultTests: XCTestCase {
 		
 		result.onUnexpected { (error) in
 			XCTAssertEqual(error, GraphError.frontierIsEmpty)
-		}
-		result.onExpected { _ in
-			XCTFail()
 		}
 		
 		XCTAssertNotNil(result.error)
