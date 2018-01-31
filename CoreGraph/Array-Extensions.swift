@@ -53,3 +53,32 @@ extension Array where Element: Equatable {
 		}
 	}
 }
+
+extension Array where Element: Comparable {
+	mutating func addSorted(_ element: Element) {
+		insert(element, at: index(for: element))
+	}
+	
+	/**
+	Calculates the index in the minimum heap for a given element value.
+	This is used for inserting elements in the array which gets automatically sorted along the way.
+	- Parameter for: An element value to get the index for.
+	- Returns: The index of the given element.
+	*/
+	func index(for element: Element) -> Int {
+		var low = startIndex
+		var high = endIndex
+		
+		while low != high {
+			let mid = low.advanced(by: low.distance(to: high) / 2)
+			
+			if self[mid] < element {
+				low = mid.advanced(by: 1)
+			} else {
+				high = mid
+			}
+		}
+		
+		return low
+	}
+}

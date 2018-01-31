@@ -60,13 +60,16 @@ class PathTests: XCTestCase {
 	}
 	
 	func testEquality() {
-		let pathCopy = Path.end.append(25, weight: 65)
-		let secondPath = Path.end.append(25, weight: 1265)
-		let thirdPath = Path.end.append(12, weight: 65)
+		let pathA = Path.end.append(25, weight: 65)
+		let pathB = Path.end.append(25, weight: 65)
+		let pathC = Path.end.append(25, weight: 165)
+		let pathD = Path.end.append(12, weight: 65)
 
-		XCTAssertTrue(path == pathCopy)
-		XCTAssertTrue(path == thirdPath)
-		XCTAssertFalse(path == secondPath)
+		XCTAssertTrue(pathA == pathB)
+		XCTAssertTrue(pathA == pathA)
+		XCTAssertTrue(pathA == pathC)
+		XCTAssertFalse(pathA == pathD)
+		XCTAssertFalse(pathC == pathD)
 	}
 	
 	func testComparable() {

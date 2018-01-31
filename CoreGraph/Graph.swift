@@ -17,6 +17,8 @@ public struct Graph<Element: Hashable> {
 	The nodes are stored as the keys and the edges leading from the nodes are the dictionary values.
 	*/
 	private(set) var nodes: [Element: [Edge<Element>]] = [:]
+	
+	public init() {}
 }
 
 
@@ -63,67 +65,58 @@ public extension Graph {
 	}
 	
 	/**
-	Calculates the shortest path between the two given nodes using dijkstra's algorithm.
 	
-	- Parameter from: The value of the starting node.
-	- Parameter to: The value of the destination node.
-	- Returns: A `Result` value containing either the shortest `Path` value or an unexpected error.
 	*/
-	func shortestPath(from: Element, to: Element) -> Result<Path<Element>> {
-		guard self[from] != nil else {
+	func shortestPath(from source: Element,
+					  to destination: Element,
+					  using heuristic: @escaping (Element) -> Double = { _ in 0.0}) -> Result<Path<Element>> {
+		guard self[source] != nil else {
 			return .unexpected(.startingPOINotFound)
 		}
-		guard self[to] != nil else {
+		guard self[destination] != nil else {
 			return .unexpected(.destinationPOINotFound)
 		}
 		
-		/// Represents the frontier. It is contains all paths along the graph.
-		var frontier = Frontier<Element>()
-		// Contains all paths that are shortest to the destination node of the path
-		var finalPaths = Frontier<Element>()
-
-		// The starting path in the frontier.		
-		let startingPath = Path.node(data: from, weight: 0, previous: .end)
-		frontier.add(startingPath)
+		let startingPath = Path.end.append(source, weight: 0.0, estimation: heuristic(source))
+		var openList = [Path<Element>]()
+		var eliminatedNodes: Set<Element> = [source]
 		
-		// Calculate paths to all nodes while the frontier is not empty
-		while !frontier.isEmpty {
-			// Finding the current best path, which can't be nil.
-			let bestPath = frontier.bestPath.data!
-			let node = bestPath.node!
-			let edges = nodes[node]!
+		successorsPaths(for: startingPath, using: heuristic).forEach { openList.addSorted($0) }
+		
+		while !openList.isEmpty {
+			let currentPath = openList.removeFirst()
+
+			guard let currentNode = currentPath.node else {
+				return .unexpected(.shortestPathNotFound)
+			}
+
+			if currentNode == destination {
+				return .expected(currentPath)
+			}
+
+			eliminatedNodes.insert(currentNode)
 			
-			// For each edge in the best path, add a new path to the frontier
-			for edge in edges {
-				guard !bestPath.contains(edge.destination) else {
-					continue
+			let successorPaths = successorsPaths(for: currentPath, using: heuristic).filter { !eliminatedNodes.contains($0.node!) }
+
+			for successor in successorPaths {
+				let index = openList.index(for: successor)
+				
+				if index < openList.count && openList[index] == successor {
+					if successor.totalWeight < openList[index].totalWeight {
+						guard let node = openList[index].node else { continue }
+						let _path = currentPath.append(node, weight: openList[index].weight, estimation: heuristic(node))
+						
+						openList[index] = _path
+					}
+				} else {
+					openList.addSorted(successor)
 				}
-				
-				frontier.add(bestPath.append(edge.destination, weight: edge.weight))
-			}
-			
-			// Removing the best path since it will be added to the final paths if it reaches the destination.
-			// This way, the frontier eventually gets smaller and smaller.
-			frontier.removeBestPath()
-			
-			// When the destination is reached, the current best path is added to the final paths array.
-			if node == to {
-				finalPaths.add(bestPath)
-				
-//				if finalPaths.paths.count >= 1 {
-//					frontier.removeAllPaths()
-//				}
 			}
 		}
-		
-		// Getting the path to the destination node with the lowest total weight
-		if let path = finalPaths.bestPath.data {
-			return .expected(path)
-		} else {
-			return .unexpected(.shortestPathNotFound)
-		}
-	}
 
+		return .unexpected(.shortestPathNotFound)
+	}
+	
 	/**
 	Removes all nodes from the graph.
 	*/
@@ -149,6 +142,16 @@ extension Graph {
 			return nodes[node]!.contains(where: { edge -> Bool in
 				return edge.destination == anotherNode
 			})
+		}
+	}
+	
+	func successorsPaths(for path: Path<Element>, using estimation: @escaping (Element) -> Double) -> [Path<Element>] {
+		guard let _node = path.node, let edges = nodes[_node] else {
+			return []
+		}
+		
+		return edges.map { edge in
+			return path.append(edge.destination, weight: edge.weight, estimation: estimation(edge.destination))
 		}
 	}
 }

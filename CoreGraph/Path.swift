@@ -17,13 +17,20 @@ The `end` case marks a path's end segment.
 The `Path` enum is generic over the head node element's type and forces the previous path segment
 to be generic over the same type.
 */
-public enum Path<Element: Equatable> {
+public enum Path<Element: Hashable> {
+	public typealias Estimation = (Element) -> Double
+
 	/// Indicates that the path is at it's end.
 	case end
 	/** The node segment that contains the specified node data, a corresponding weight
-	to this node from the previous one and a reference to the previous path segment.
+	to this node from the previous one, a reference to the previous path segment and an
+	estimated weight to the destination node (this is only used in the A*-Algorithm).
 	*/
-	indirect case node(data: Element, weight: Double, previous: Path<Element>)
+	indirect case node(
+		data: Element,
+		weight: Double,
+		previous: Path<Element>,
+		estimation: Double)
 }
 
 // MARK: - Internal methods and properties
@@ -35,8 +42,8 @@ internal extension Path {
 	- Parameter weight: The weight to the new head node.
 	- Returns: A new path object that represents the old path plus the given node as its new head.
 	*/
-	func append(_ element: Element, weight: Double) -> Path {
-		return .node(data: element, weight: weight, previous: self)
+	func append(_ element: Element, weight: Double, estimation: Double = 0.0) -> Path<Element> {
+		return .node(data: element, weight: weight, previous: self, estimation: estimation)
 	}
 
 	/**
@@ -47,7 +54,7 @@ internal extension Path {
 	- Returns: A boolean value indicating whether the given node is part of the path.
 	*/
 	func contains(_ element: Element) -> Bool {
-		if case let .node(data, _, previous) = self {
+		if case let .node(data, _, previous, _) = self {
 			if data == element {
 				return true
 			} else {
@@ -62,7 +69,7 @@ internal extension Path {
 	The node element of the path segment if present and nil if the path segment marks the end of the path.
 	*/
 	var node: Element? {
-		if case .node(let destination, _, _) = self {
+		if case .node(let destination, _, _, _) = self {
 			return destination
 		} else {
 			return nil
@@ -73,7 +80,7 @@ internal extension Path {
 	The previous path segment if present and nil if the path segment marks the end of the path.
 	*/
 	var previous: Path? {
-		if case .node(_, _, let previous) = self {
+		if case .node(_, _, let previous, _) = self {
 			return previous
 		} else {
 			return nil
@@ -85,16 +92,37 @@ internal extension Path {
 	path segment marks the end of the path.
 	*/
 	var weight: Double {
-		if case .node(_, let weight, _) = self {
+		if case .node(_, let weight, _, _) = self {
 			return weight
 		} else {
 			return 0
 		}
 	}
+	
+	/**
+	The estimated weight to a given destination. Calculated via an external heuristic function.
+	- Parameter to: The node where to estimate the weight to.
+	- Returns: The estimated weight to the given node.
+	*/
+	var estimation: Double {
+		if case .node(_, _, _, let estimation) = self {
+			return estimation
+		} else {
+			return 0.0
+		}
+	}
+	
+	var weightToDestination: Double {
+		if case .node(_, _, _, let estimation) = self {
+			return totalWeight + estimation
+		} else {
+			return 0.0
+		}
+	}
 }
 
 // MARK: - Public methods and properties
-extension Path {
+public extension Path {
 	/**
 	The node and weight data that makes op the path. It is given as an array of tuples where the first entry is a
 	node element and the second entry represents the weight **to that node from the previous one**.
@@ -111,7 +139,7 @@ extension Path {
 	````
 	*/
 	var nodeData: [(node: Element, weight: Double)] {
-		if case let .node(node, weight, previous) = self {
+		if case let .node(node, weight, previous, _) = self {
 			return previous.nodeData + [(node: node, weight: weight)]
 		} else {
 			return []
@@ -141,14 +169,22 @@ extension Path: CustomStringConvertible {
 // MARK: - Path Equatable
 extension Path: Equatable {
 	public static func ==(left: Path, right: Path) -> Bool {
-		return left.totalWeight == right.totalWeight
+		return left.node == right.node
 	}
 }
 
 // MARK: - Path Comparable
 extension Path: Comparable {
 	public static func < (left: Path, right: Path) -> Bool {
-		return left.totalWeight < right.totalWeight
+		return  left.weightToDestination < right.weightToDestination
 	}
 }
+
+// MARK: - Hashable
+extension Path: Hashable {
+	public var hashValue: Int {
+		return node?.hashValue ?? 0
+	}
+}
+
 
