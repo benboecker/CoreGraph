@@ -65,11 +65,12 @@ public extension Graph {
 	}
 	
 	/**
-	
+	Calculates the shortest path in the graph from one node to another using Dijkstra's Algorithm.
+	- Parameter from: The source node from where the algorithm calculates the shortest path.
+	- Parameter to: The destination node to which the shortest path is calculated to from the source node.
+	- Returns: A `Result` value containing either the calculated shortest `Path` or an unexpected error value.
 	*/
-	func shortestPath(from source: Element,
-					  to destination: Element,
-					  using heuristic: @escaping (Element) -> Double = { _ in 0.0}) -> Result<Path<Element>> {
+	func shortestPath(from source: Element, to destination: Element) -> Result<Path<Element>> {
 		guard self[source] != nil else {
 			return .unexpected(.startingPOINotFound)
 		}
@@ -77,11 +78,11 @@ public extension Graph {
 			return .unexpected(.destinationPOINotFound)
 		}
 		
-		let startingPath = Path.end.append(source, weight: 0.0, estimation: heuristic(source))
+		let startingPath = Path.end.append(source, weight: 0.0)
 		var openList = [Path<Element>]()
 		var eliminatedNodes: Set<Element> = [source]
 		
-		successorsPaths(for: startingPath, using: heuristic).forEach { openList.addSorted($0) }
+		successorsPaths(for: startingPath).forEach { openList.addSorted($0) }
 		
 		while !openList.isEmpty {
 			let currentPath = openList.removeFirst()
@@ -96,20 +97,21 @@ public extension Graph {
 
 			eliminatedNodes.insert(currentNode)
 			
-			let successorPaths = successorsPaths(for: currentPath, using: heuristic).filter { !eliminatedNodes.contains($0.node!) }
+			let successorPaths = successorsPaths(for: currentPath)
 
-			for successor in successorPaths {
+			for successor in successorPaths where !eliminatedNodes.contains(successor.node!) {
 				let index = openList.index(for: successor)
 				
 				if index < openList.count && openList[index] == successor {
 					if successor.totalWeight < openList[index].totalWeight {
+						// TODO: Find a test case where this is triggered
 						guard let node = openList[index].node else { continue }
-						let _path = currentPath.append(node, weight: openList[index].weight, estimation: heuristic(node))
-						
+						let _path = currentPath.append(node, weight: openList[index].weight)
+
 						openList[index] = _path
 					}
 				} else {
-					openList.addSorted(successor)
+					openList.insert(successor, at: index)
 				}
 			}
 		}
@@ -145,13 +147,21 @@ extension Graph {
 		}
 	}
 	
-	func successorsPaths(for path: Path<Element>, using estimation: @escaping (Element) -> Double) -> [Path<Element>] {
+	/**
+	Calculates all paths leading from the destination node of a given `Path` value.
+	
+	**NOTE:** This is responsible for the false distances in the Dijkstra's final result `Path`.
+	
+	- Parameter for: The `Path` value from which's destination node the resulting paths will be diverged.
+	- Returns: An array of diverging `Path` values from the given `Path` value.
+	*/
+	func successorsPaths(for path: Path<Element>) -> [Path<Element>] {
 		guard let _node = path.node, let edges = nodes[_node] else {
 			return []
 		}
 		
 		return edges.map { edge in
-			return path.append(edge.destination, weight: edge.weight, estimation: estimation(edge.destination))
+			return path.append(edge.destination, weight: edge.weight)
 		}
 	}
 }
