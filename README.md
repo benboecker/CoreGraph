@@ -47,7 +47,7 @@ print(result.isExpected) // true
 
 let wrong = graph.addEdge(from: "A", to: "B", weight: 30.0)
 print(result.error!) // .edgeAlreadyExists
-``
+```
 
 The shortest path between two nodes is calculated with a Dijkstra algorithm.
 
