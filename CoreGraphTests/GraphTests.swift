@@ -95,7 +95,18 @@ class GraphTests: XCTestCase {
 		XCTAssertFalse(graph.node("C", hasEdgeTo: "C"))
 	}
 	
-	
+	func testGetSuccessorPaths() {
+		var graph = Graph<String>()
+		graph.addNode(with: "A") // A
+		graph.addNode(with: "B") // B
+		
+		let path = Path.end.append("A", weight: 10)
+		let pathC = Path.end.append("C", weight: 10)
+
+		XCTAssertEqual(path.totalWeight, 10)
+		XCTAssertEqual(graph.successorsPaths(for: path), [])
+		XCTAssertEqual(graph.successorsPaths(for: pathC), [])		
+	}
 }
 
 

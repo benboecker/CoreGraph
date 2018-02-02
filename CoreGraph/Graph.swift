@@ -86,10 +86,7 @@ public extension Graph {
 		
 		while !openList.isEmpty {
 			let currentPath = openList.removeFirst()
-
-			guard let currentNode = currentPath.node else {
-				return .unexpected(.shortestPathNotFound)
-			}
+			let currentNode = currentPath.node!
 
 			if currentNode == destination {
 				return .expected(currentPath)
@@ -138,13 +135,11 @@ extension Graph {
 	- Returns: A `Bool` indicating whether the graph has an edge leading from `node` to `anotherNode`.
 	*/
 	func node(_ node: Element, hasEdgeTo anotherNode: Element) -> Bool {
-		if self.nodes[node] == nil {
-			return false
-		} else {
-			return nodes[node]!.contains(where: { edge -> Bool in
-				return edge.destination == anotherNode
-			})
-		}
+		guard let edges = nodes[node] else { return false }
+		
+		return edges.contains(where: { edge -> Bool in
+			return edge.destination == anotherNode
+		})
 	}
 	
 	/**

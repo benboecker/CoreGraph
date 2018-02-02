@@ -67,15 +67,15 @@ class DijkstraTests: XCTestCase {
 		XCTAssertNotNil(shortestPathResult.data)
 		XCTAssertEqual(shortestPathResult.data?.totalWeight, 6)
 		
-//		XCTAssertEqual("\(shortestPathResult.data!)", "[A] —4.0— [D] —8.0— [E]")
-//
-//		XCTAssertEqual(shortestPathResult.data?.nodeData.count, 3)
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[0].node, "A")
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[0].weight, 0)
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[1].node, "D")
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[1].weight, 4)
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[2].node, "E")
-//		XCTAssertEqual(shortestPathResult.data?.nodeData[2].weight, 8)
+		XCTAssertEqual("\(shortestPathResult.data!)", "[A] —1.0— [B] —5.0— [D]")
+
+		XCTAssertEqual(shortestPathResult.data?.nodeData.count, 3)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].node, "A")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[0].weight, 0)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].node, "B")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[1].weight, 1)
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].node, "D")
+		XCTAssertEqual(shortestPathResult.data?.nodeData[2].weight, 5)
 	}
 	
 	func testSackgasse() {

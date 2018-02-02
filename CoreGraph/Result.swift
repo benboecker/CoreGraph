@@ -41,18 +41,18 @@ public extension Result {
 	var data: T? {
 		if case .expected(let data) = self {
 			return data
-		} else {
-			return nil
 		}
+		
+		return nil
 	}
 	
 	/// The error value in case of an unexpected result or nil if the result holds the expected data.
 	var error: GraphError? {
 		if case .unexpected(let error) = self {
 			return error
-		} else {
-			return nil
 		}
+		
+		return nil
 	}
 	
 	/**

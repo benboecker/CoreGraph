@@ -77,6 +77,24 @@ class ArrayTests: XCTestCase {
 		XCTAssertTrue(removeResultUnexpected.isUnexpected)
 		XCTAssertEqual(removeResultExpected.data!, 1)
 	}
+	
+	func testInsertSorted() {
+		var array = [3, 8]
+		
+		array.addSorted(4)
+		XCTAssertEqual(array, [3, 4, 8])
+
+		array.addSorted(7)
+		XCTAssertEqual(array, [3, 4, 7, 8])
+
+		array.addSorted(14)
+		XCTAssertEqual(array, [3, 4, 7, 8, 14])
+
+		array.addSorted(1)
+		XCTAssertEqual(array, [1, 3, 4, 7, 8, 14])
+
+		
+	}
 }
 
 
