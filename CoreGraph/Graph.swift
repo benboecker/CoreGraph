@@ -9,9 +9,9 @@
 import Foundation
 
 /**
-This struct represents the graph used for calculating the shortest path between nodes.
+This class represents the graph used for calculating the shortest path between nodes.
 */
-public struct Graph<Element: Hashable> {
+public class Graph<Element: Hashable> {
 	/**
 	Stores the nodes that build the graph as a dictionary for better performance.
 	The nodes are stored as the keys and the edges leading from the nodes are the dictionary values.
@@ -31,7 +31,7 @@ public extension Graph {
 	- Parameter with: The value that will be stored in the new node.
 	- Returns: A Result object containing either the newly created `Node` or an error that the node already exists.
 	*/
-	@discardableResult mutating func addNode(with value: Element) -> Result<Element> {
+	@discardableResult func addNode(with value: Element) -> Result<Element> {
 		guard nodes[value] == nil else {
 			return .unexpected(.nodeAlreadyExists)
 		}
@@ -51,7 +51,7 @@ public extension Graph {
 	- Parameter to: A value that should be stored in a node in the graph, acting as the **destination** of the new Edge.
 	- Parameter weight: The weight of the new edge. This is used for both the new edge and the reversed edge.
 	*/
-	@discardableResult mutating func addEdge(from source: Element, to destination: Element, weight: Double) -> Result<Void> {
+	@discardableResult func addEdge(from source: Element, to destination: Element, weight: Double) -> Result<Void> {
 		guard !node(source, hasEdgeTo: destination),
 			!node(destination, hasEdgeTo: source)
 			else {
@@ -119,7 +119,7 @@ public extension Graph {
 	/**
 	Removes all nodes from the graph.
 	*/
-	mutating func clear() {
+	func clear() {
 		nodes.removeAll()
 	}
 }
