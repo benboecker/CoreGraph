@@ -11,14 +11,14 @@ import XCTest
 
 class GraphTests: XCTestCase {
 	func testBuildingGraphWithInts() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 
 		let nodeA = graph.addNode(with: 1).data!
 		let nodeB = graph.addNode(with: 2).data!
 		let nodeC = graph.addNode(with: 3).data!
 		let nodeD = graph.addNode(with: 4).data!
 		let nodeE = graph.addNode(with: 5).data!
-		let nodeF = graph.addNode(with: 3).error
+		let nodeF = graph.addNode(with: 3).error as? GraphError
 
 		graph.addEdge(from: 1, to: 2, weight: 1)
 		graph.addEdge(from: 1, to: 4, weight: 4)
@@ -37,7 +37,7 @@ class GraphTests: XCTestCase {
 	}
 
 	func testGraphSubscript() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 
 		let nodeA = graph.addNode(with: 1).data!
 		let nodeB = graph.addNode(with: 2).data!
@@ -64,11 +64,11 @@ class GraphTests: XCTestCase {
 		let graph = Graph<String>()
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult.isUnexpected)
-		XCTAssertEqual(shortestPathResult.error, GraphError.startingPOINotFound)
+		XCTAssertEqual(shortestPathResult.error as? GraphError, GraphError.startingPOINotFound)
 	}
 	
 	func testClearGraph() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		graph.addNode(with: "A")
 		graph.addNode(with: "B")
 		graph.addEdge(from: "A", to: "B", weight: 1)
@@ -83,7 +83,7 @@ class GraphTests: XCTestCase {
 	}
 	
 	func testHasEdge() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		graph.addNode(with: "A")
 		graph.addNode(with: "B")
 		graph.addEdge(from: "A", to: "B", weight: 1)
@@ -96,7 +96,7 @@ class GraphTests: XCTestCase {
 	}
 	
 	func testGetSuccessorPaths() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		graph.addNode(with: "A") // A
 		graph.addNode(with: "B") // B
 		

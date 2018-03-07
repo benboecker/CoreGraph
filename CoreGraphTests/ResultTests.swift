@@ -29,17 +29,17 @@ class ResultTests: XCTestCase {
 	}
 	
 	func testUnexpectedResult() {
-		let result = Result<Any>.unexpected(.frontierIsEmpty)
+		let result = Result<Any>.unexpected(GraphError.frontierIsEmpty)
 		
 		XCTAssertTrue(result.isUnexpected)
 		XCTAssertFalse(result.isExpected)
 		
 		result.onUnexpected { (error) in
-			XCTAssertEqual(error, GraphError.frontierIsEmpty)
+			XCTAssertEqual(error as? GraphError, GraphError.frontierIsEmpty)
 		}
 		
 		XCTAssertNotNil(result.error)
 		XCTAssertNil(result.data)
-		XCTAssertEqual(result.error!, GraphError.frontierIsEmpty)
+		XCTAssertEqual(result.error as? GraphError, GraphError.frontierIsEmpty)
 	}
 }

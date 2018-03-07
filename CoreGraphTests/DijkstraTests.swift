@@ -18,7 +18,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testShortestRouteWithInts() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 		
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
@@ -46,7 +46,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testShortestRouteWithSrings() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		
 		graph.addNode(with: "A") // A
 		graph.addNode(with: "B") // B
@@ -79,7 +79,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testSackgasse() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 		
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
@@ -104,7 +104,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testCircularGraphWithInts() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 		
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
@@ -130,7 +130,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testCircularGraphWithInts2() {
-		var graph = Graph<Int>()
+		let graph = Graph<Int>()
 		
 		graph.addNode(with: 1)
 		graph.addNode(with: 2)
@@ -163,7 +163,7 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testShortestRouteWithStrings2() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		
 		graph.addNode(with: "KA") // A
 		graph.addNode(with: "OL") // B
@@ -208,7 +208,7 @@ class DijkstraTests: XCTestCase {
 		let dortmund = City(name: "Dortmund", population: 600_000)
 		let duesseldorf = City(name: "Düsseldorf", population: 500_000)
 		
-		var graph = Graph<City>()
+		let graph = Graph<City>()
 		
 		graph.addNode(with: muenster)
 		graph.addNode(with: bielefeld)
@@ -255,19 +255,19 @@ class DijkstraTests: XCTestCase {
 	}
 	
 	func testDestinationNotFound() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		graph.addNode(with: "A")
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
 		XCTAssertTrue(shortestPathResult.isUnexpected)
-		XCTAssertEqual(shortestPathResult.error, GraphError.destinationPOINotFound)
+		XCTAssertEqual(shortestPathResult.error as? GraphError, GraphError.destinationPOINotFound)
 	}
 	
 	func testBestPathNotFound() {
-		var graph = Graph<String>()
+		let graph = Graph<String>()
 		graph.addNode(with: "A")
 		graph.addNode(with: "B")
 		let shortestPathResult = graph.shortestPath(from: "A", to: "B")
-		XCTAssertEqual(shortestPathResult.error, GraphError.shortestPathNotFound)
+		XCTAssertEqual(shortestPathResult.error as? GraphError, GraphError.shortestPathNotFound)
 	}
 }
 

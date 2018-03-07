@@ -95,7 +95,7 @@ public extension Graph {
 		while !openList.isEmpty {
 			/// Get the first path from the open list, which is the one with the smallest weight.
 			let currentPath = openList.removeFirst()
-			/// Get the path's node.
+			/// Get the path's final node.
 			let currentNode = currentPath.node!
 
 			/// If the path's node is equal to the destination node, the algorithm exits successfully.
