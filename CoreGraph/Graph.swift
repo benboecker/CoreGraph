@@ -33,7 +33,7 @@ public extension Graph {
 	*/
 	@discardableResult func addNode(with value: Element) -> Result<Element> {
 		guard nodes[value] == nil else {
-			return .unexpected(.nodeAlreadyExists)
+			return .unexpected(GraphError.nodeAlreadyExists)
 		}
 		
 		nodes[value] = []
@@ -55,7 +55,7 @@ public extension Graph {
 		guard !node(source, hasEdgeTo: destination),
 			!node(destination, hasEdgeTo: source)
 			else {
-				return .unexpected(.edgeAlreadyExists)
+				return .unexpected(GraphError.edgeAlreadyExists)
 		}
 
 		self.nodes[source]?.append(Edge(to: destination, weight: weight))
@@ -71,34 +71,50 @@ public extension Graph {
 	- Returns: A `Result` value containing either the calculated shortest `Path` or an unexpected error value.
 	*/
 	func shortestPath(from source: Element, to destination: Element) -> Result<Path<Element>> {
+		/// If the source node can not be found in the graph, the algorithm returns an unexpected result.
 		guard self[source] != nil else {
-			return .unexpected(.startingPOINotFound)
+			return .unexpected(GraphError.startingPOINotFound)
 		}
+		/// If the destination node can not be found in the graph, the algorithm returns an unexpected result.
 		guard self[destination] != nil else {
-			return .unexpected(.destinationPOINotFound)
+			return .unexpected(GraphError.destinationPOINotFound)
 		}
 		
+		/// Initialize a path from the starting node with a weight of 0.
 		let startingPath = Path.end.append(source, weight: 0.0)
+		
+		/// Initialize the list of open paths.
 		var openList = [Path<Element>]()
+		/// Initialize the list of eliminated nodes with the starting node.
 		var eliminatedNodes: Set<Element> = [source]
 		
+		/// Add the paths leading from the starting path (containing only the starting node) to the open list.
 		successorsPaths(for: startingPath).forEach { openList.addSorted($0) }
 		
+		/// While the open list still contains path to check, continue to find a shortest path.
 		while !openList.isEmpty {
+			/// Get the first path from the open list, which is the one with the smallest weight.
 			let currentPath = openList.removeFirst()
+			/// Get the path's node.
 			let currentNode = currentPath.node!
 
+			/// If the path's node is equal to the destination node, the algorithm exits successfully.
 			if currentNode == destination {
 				return .expected(currentPath)
 			}
 
+			/// The path's node is added to the list of eliminated nodes.
 			eliminatedNodes.insert(currentNode)
 			
+			/// Get all paths leading from the currently inspected path's node.
 			let successorPaths = successorsPaths(for: currentPath)
 
+			/// Paths that lead to eliminated nodes are skipped in the loop
 			for successor in successorPaths where !eliminatedNodes.contains(successor.node!) {
+				/// Get the index where the successor path should be inserted into the open list via binary search.
 				let index = openList.index(for: successor)
 				
+				/// If the successor path is not part of the open list, add it to the open list at the determined index.
 				if index < openList.count && openList[index] == successor {
 					if successor.totalWeight < openList[index].totalWeight {
 						// TODO: Find a test case where this is triggered
@@ -113,7 +129,8 @@ public extension Graph {
 			}
 		}
 
-		return .unexpected(.shortestPathNotFound)
+		/// When the algorithm reaches this point, no path to the destination node could be found.
+		return .unexpected(GraphError.shortestPathNotFound)
 	}
 	
 	/**

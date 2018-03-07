@@ -16,7 +16,7 @@ extension Array where Element: Equatable {
 			return .expected(index)
 		}
 		
-		return .unexpected(.elementNotRemoved)
+		return .unexpected(GraphError.elementNotRemoved)
 	}
 	
 	func element(after element: Element) -> Element? {

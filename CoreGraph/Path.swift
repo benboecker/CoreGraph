@@ -18,8 +18,6 @@ The `Path` enum is generic over the head node element's type and forces the prev
 to be generic over the same type.
 */
 public enum Path<Element: Equatable> {
-	public typealias Estimation = (Element) -> Double
-
 	/// Indicates that the path is at it's end.
 	case end
 	/** The node segment that contains the specified node data, a corresponding weight
@@ -109,11 +107,11 @@ public extension Path {
 	````
 	end <- [N1] <-15— [N2] <-10— [N3] <-20— [N4] <-15— [N5]
 	
-	[(node1, 0),
-	(node2, 15),
-	(node3, 10),
-	(node4, 20),
-	(node5, 15)]
+	[(N1, 0),
+	(N2, 15),
+	(N3, 10),
+	(N4, 20),
+	(N5, 15)]
 	````
 	*/
 	var nodeData: [(node: Element, weight: Double)] {

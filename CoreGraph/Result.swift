@@ -19,7 +19,7 @@ public enum Result<T> {
 	/// The expected result case with the correct data as the associated value.
 	case expected(T)
 	/// The result is unexpected and a more expressive Error is passed along as the associated value.
-	case unexpected(GraphError)
+	case unexpected(Error)
 }
 
 // MARK: - Public methods and properties
@@ -47,7 +47,7 @@ public extension Result {
 	}
 	
 	/// The error value in case of an unexpected result or nil if the result holds the expected data.
-	var error: GraphError? {
+	var error: Error? {
 		if case .unexpected(let error) = self {
 			return error
 		}
@@ -69,7 +69,7 @@ public extension Result {
 	This function takes a closure as it's parameter which gets called in case of an unexpected result.
 	- Parameter callback: A closure of type `(GraphError) -> Void` which gets called if the result is unexpected. The error value gets passed to the closure as a non-optional parameter, ready for use.
 	*/
-	func onUnexpected(_ callback: (GraphError) -> Void) {
+	func onUnexpected(_ callback: (Error) -> Void) {
 		if case .unexpected(let error) = self {
 			callback(error)
 		}
