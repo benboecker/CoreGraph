@@ -12,16 +12,13 @@ import Foundation
 public struct PathAsArray<Node: Equatable> {
 	private var nodes: [Node] = []
 	private var weights: [Double] = []
+	private(set) var totalWeight: Double = 0.0
 }
 
 
 extension PathAsArray: CustomStringConvertible {
-	static var end: PathAsArray {
-		return PathAsArray()
-	}
-	
 	func append(_ element: Node, weight: Double) -> PathAsArray<Node> {
-		return PathAsArray(nodes: nodes + [element], weights: weights + [weight])
+		return PathAsArray(nodes: nodes + [element], weights: weights + [weight], totalWeight: totalWeight + weight)
 	}
 	
 	func contains(_ element: Node) -> Bool {
@@ -29,13 +26,7 @@ extension PathAsArray: CustomStringConvertible {
 	}
 	
 	var nodeData: [(node: Node, weight: Double)] {
-		let zipped = zip(nodes, weights)
-		
-		return zipped.map { ($0, $1) }
-	}
-	
-	var totalWeight: Double {
-		return weights.reduce(into: 0, +=)
+		return zip(nodes, weights).map { ($0, $1) }
 	}
 	
 	public var description: String {
@@ -47,8 +38,8 @@ extension PathAsArray: CustomStringConvertible {
 			}.joined()
 	}
 	
-	var node: Node? {
-		return nodes.last
+	var node: Node {
+		return nodes.last!
 	}
 
 	

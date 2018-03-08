@@ -81,7 +81,8 @@ public extension Graph {
 		}
 		
 		/// Initialize a path from the starting node with a weight of 0.
-		let startingPath = Path(with: source, weight: 0.0)
+		let startingPath = Path(with: source)
+		
 		/// Initialize the list of open paths.
 		var openList = [Path<Element>]()
 		/// Initialize the list of eliminated nodes with the starting node.

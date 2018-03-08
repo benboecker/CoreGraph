@@ -15,7 +15,7 @@ public final class Path<Element: Equatable> {
 	internal let previous: Path<Element>?
 	let totalWeight: Double
 	
-	init(with node: Element, weight: Double, previous: Path<Element>? = nil) {
+	init(with node: Element, weight: Double = 0.0, previous: Path<Element>? = nil) {
 		self.node = node
 		self.weight = weight
 		self.previous = previous
