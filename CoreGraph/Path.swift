@@ -13,11 +13,13 @@ public final class Path<Element: Equatable> {
 	internal let node: Element
 	internal let weight: Double
 	internal let previous: Path<Element>?
+	let totalWeight: Double
 	
 	init(with node: Element, weight: Double, previous: Path<Element>? = nil) {
 		self.node = node
 		self.weight = weight
 		self.previous = previous
+		self.totalWeight = weight + (previous?.totalWeight ?? 0.0)
 	}
 }
 
@@ -35,18 +37,13 @@ internal extension Path {
 	}
 }
 
-extension Path {
-	var nodeData: [(node: Element, weight: Double)] {
+public extension Path {
+	public var nodeData: [(node: Element, weight: Double)] {
 		guard let previous = previous else {
 			return [(node: node, weight: weight)]
 		}
 		
 		return previous.nodeData + [(node: node, weight: weight)]
-	}
-	
-	/// Returns the sum of all weights on the path.
-	var totalWeight: Double {
-		return weight + (previous?.totalWeight ?? 0)
 	}
 }
 
