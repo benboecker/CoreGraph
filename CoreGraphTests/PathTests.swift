@@ -12,7 +12,7 @@ import XCTest
 
 class PathTests: XCTestCase {
 	
-	var path = Path<Int>.end
+	var path = PathAsEnum<Int>.end
 	
 	override func setUp() {
 		super.setUp()
@@ -33,7 +33,7 @@ class PathTests: XCTestCase {
 	func testGetNode() {
 		XCTAssertEqual(path.node, 5)
 		XCTAssertNotEqual(path.node, 28)
-		XCTAssertEqual(Path<Int>.end.node, nil)
+		XCTAssertEqual(PathAsEnum<Int>.end.node, nil)
 	}
 	
 	func testGetNodeValues() {
@@ -60,10 +60,10 @@ class PathTests: XCTestCase {
 	}
 	
 	func testEquality() {
-		let pathA = Path.end.append(25, weight: 65)
-		let pathB = Path.end.append(25, weight: 65)
-		let pathC = Path.end.append(25, weight: 165)
-		let pathD = Path.end.append(12, weight: 65)
+		let pathA = PathAsEnum.end.append(25, weight: 65)
+		let pathB = PathAsEnum.end.append(25, weight: 65)
+		let pathC = PathAsEnum.end.append(25, weight: 165)
+		let pathD = PathAsEnum.end.append(12, weight: 65)
 
 		XCTAssertTrue(pathA == pathB)
 		XCTAssertTrue(pathA == pathA)
@@ -73,9 +73,9 @@ class PathTests: XCTestCase {
 	}
 	
 	func testComparable() {
-		let pathCopy = Path.end.append(25, weight: 66)
-		let secondPath = Path.end.append(25, weight: 64)
-		let thirdPath = Path.end.append(12, weight: 77)
+		let pathCopy = PathAsEnum.end.append(25, weight: 66)
+		let secondPath = PathAsEnum.end.append(25, weight: 64)
+		let thirdPath = PathAsEnum.end.append(12, weight: 77)
 		
 		XCTAssertTrue(path < pathCopy)
 		XCTAssertFalse(path < secondPath)

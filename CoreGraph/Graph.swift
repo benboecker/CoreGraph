@@ -81,8 +81,7 @@ public extension Graph {
 		}
 		
 		/// Initialize a path from the starting node with a weight of 0.
-		let startingPath = Path.end.append(source, weight: 0.0)
-		
+		let startingPath = Path(with: source, weight: 0.0)
 		/// Initialize the list of open paths.
 		var openList = [Path<Element>]()
 		/// Initialize the list of eliminated nodes with the starting node.
@@ -95,22 +94,20 @@ public extension Graph {
 		while !openList.isEmpty {
 			/// Get the first path from the open list, which is the one with the smallest weight.
 			let currentPath = openList.removeFirst()
-			/// Get the path's final node.
-			let currentNode = currentPath.node!
 
 			/// If the path's node is equal to the destination node, the algorithm exits successfully.
-			if currentNode == destination {
+			if currentPath.node == destination {
 				return .expected(currentPath)
 			}
 
 			/// The path's node is added to the list of eliminated nodes.
-			eliminatedNodes.insert(currentNode)
+			eliminatedNodes.insert(currentPath.node)
 			
 			/// Get all paths leading from the currently inspected path's node.
 			let successorPaths = successorsPaths(for: currentPath)
 
 			/// Paths that lead to eliminated nodes are skipped in the loop
-			for successor in successorPaths where !eliminatedNodes.contains(successor.node!) {
+			for successor in successorPaths where !eliminatedNodes.contains(successor.node) {
 				/// Get the index where the successor path should be inserted into the open list via binary search.
 				let index = openList.index(for: successor)
 				
@@ -118,10 +115,9 @@ public extension Graph {
 				if index < openList.count && openList[index] == successor {
 					if successor.totalWeight < openList[index].totalWeight {
 						// TODO: Find a test case where this is triggered
-						guard let node = openList[index].node else { continue }
-						let _path = currentPath.append(node, weight: openList[index].weight)
-
-						openList[index] = _path
+						let node = openList[index].node
+						let newPath = currentPath.append(node, weight: openList[index].weight)
+						openList[index] = newPath
 					}
 				} else {
 					openList.insert(successor, at: index)
@@ -168,7 +164,7 @@ extension Graph {
 	- Returns: An array of diverging `Path` values from the given `Path` value.
 	*/
 	func successorsPaths(for path: Path<Element>) -> [Path<Element>] {
-		guard let _node = path.node, let edges = nodes[_node] else {
+		guard let edges = nodes[path.node] else {
 			return []
 		}
 		

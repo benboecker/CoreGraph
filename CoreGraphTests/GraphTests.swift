@@ -100,8 +100,8 @@ class GraphTests: XCTestCase {
 		graph.addNode(with: "A") // A
 		graph.addNode(with: "B") // B
 		
-		let path = Path.end.append("A", weight: 10)
-		let pathC = Path.end.append("C", weight: 10)
+		let path = Path(with: "A", weight: 10)
+		let pathC = Path(with: "C", weight: 10)
 
 		XCTAssertEqual(path.totalWeight, 10)
 		XCTAssertEqual(graph.successorsPaths(for: path), [])

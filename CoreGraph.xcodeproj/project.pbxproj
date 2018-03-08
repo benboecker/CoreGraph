@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B37ABAB5205050F30096CFC4 /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37ABAB4205050F30096CFC4 /* Path.swift */; };
 		B3A2DAFF200687B300C2276D /* CoreGraph.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A2DAF5200687B200C2276D /* CoreGraph.framework */; };
 		B3A2DB06200687B300C2276D /* CoreGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = B3A2DAF8200687B200C2276D /* CoreGraph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B3A2DB172006882500C2276D /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB112006881D00C2276D /* Graph.swift */; };
@@ -20,7 +21,7 @@
 		B3A2DB3220091A5900C2276D /* ArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB3120091A5900C2276D /* ArrayTests.swift */; };
 		B3A2DB362009204900C2276D /* PathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A2DB352009204900C2276D /* PathTests.swift */; };
 		B3D68369202209D200DACAFD /* DijkstraTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D68368202209D200DACAFD /* DijkstraTests.swift */; };
-		B3E8DFA62018F9750000E9DB /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8DFA52018F9750000E9DB /* Path.swift */; };
+		B3E8DFA62018F9750000E9DB /* PathAsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8DFA52018F9750000E9DB /* PathAsEnum.swift */; };
 		B3F145CF201F2529007D746E /* CoreGraph.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A2DAF5200687B200C2276D /* CoreGraph.framework */; };
 		B3F145D5201F2530007D746E /* GraphPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */; };
 		B3F15CEE20223D6F003CB667 /* routing-all.plist in Resources */ = {isa = PBXBuildFile; fileRef = B3F15CED20223D6F003CB667 /* routing-all.plist */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		B3742121200CE56B00BEC17C /* GraphPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphPerformanceTests.swift; sourceTree = "<group>"; };
 		B37ABAB2205002360096CFC4 /* PathAsArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathAsArray.swift; sourceTree = "<group>"; };
+		B37ABAB4205050F30096CFC4 /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
 		B3A2DAF5200687B200C2276D /* CoreGraph.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreGraph.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3A2DAF8200687B200C2276D /* CoreGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreGraph.h; sourceTree = "<group>"; };
 		B3A2DAF9200687B200C2276D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,7 +64,7 @@
 		B3A2DB3120091A5900C2276D /* ArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTests.swift; sourceTree = "<group>"; };
 		B3A2DB352009204900C2276D /* PathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTests.swift; sourceTree = "<group>"; };
 		B3D68368202209D200DACAFD /* DijkstraTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DijkstraTests.swift; sourceTree = "<group>"; };
-		B3E8DFA52018F9750000E9DB /* Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
+		B3E8DFA52018F9750000E9DB /* PathAsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathAsEnum.swift; sourceTree = "<group>"; };
 		B3F145CA201F2529007D746E /* CoreGraphPerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreGraphPerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F145CE201F2529007D746E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3F15CED20223D6F003CB667 /* routing-all.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "routing-all.plist"; sourceTree = "<group>"; };
@@ -121,8 +123,9 @@
 				B3A2DAF8200687B200C2276D /* CoreGraph.h */,
 				B3A2DB112006881D00C2276D /* Graph.swift */,
 				B3A2DB132006882100C2276D /* Edge.swift */,
-				B3E8DFA52018F9750000E9DB /* Path.swift */,
+				B3E8DFA52018F9750000E9DB /* PathAsEnum.swift */,
 				B37ABAB2205002360096CFC4 /* PathAsArray.swift */,
+				B37ABAB4205050F30096CFC4 /* Path.swift */,
 				B3A2DB2720068A2000C2276D /* Result.swift */,
 				B3A2DB2820068A2A00C2276D /* GraphError.swift */,
 				B3A2DB2B20068B0E00C2276D /* Array-Extensions.swift */,
@@ -301,7 +304,8 @@
 				B3A2DB2C20068B0E00C2276D /* Array-Extensions.swift in Sources */,
 				B3A2DB2A20068A2B00C2276D /* GraphError.swift in Sources */,
 				B3A2DB2920068A2B00C2276D /* Result.swift in Sources */,
-				B3E8DFA62018F9750000E9DB /* Path.swift in Sources */,
+				B3E8DFA62018F9750000E9DB /* PathAsEnum.swift in Sources */,
+				B37ABAB5205050F30096CFC4 /* Path.swift in Sources */,
 				B3A2DB192006882500C2276D /* Edge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
