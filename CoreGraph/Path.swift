@@ -27,21 +27,21 @@ internal extension Path {
 	}
 	
 	func contains(_ element: Element) -> Bool {
-		if node == element {
-			return true
-		} else {
-			return previous?.contains(element) ?? false
+		guard let previous = previous, node != element else {
+			return node == element
 		}
+		
+		return previous.contains(element)
 	}
 }
 
 extension Path {
 	var nodeData: [(node: Element, weight: Double)] {
-		if let previous = previous {
-			return previous.nodeData + [(node: node, weight: weight)]
+		guard let previous = previous else {
+			return [(node: node, weight: weight)]
 		}
 		
-		return [(node: node, weight: weight)]
+		return previous.nodeData + [(node: node, weight: weight)]
 	}
 	
 	/// Returns the sum of all weights on the path.
