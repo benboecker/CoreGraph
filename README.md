@@ -73,7 +73,7 @@ graph.clear()
 ```
 
 ### `Path<Element: Equatable>`
-The expected result from the graph`s `shortestPath` function is a `Path` value that is generic over the node type of the graph. It is implemented as a linked list `enum`, meaning that one segment hold some data and points to the next until it reaches its end.
+The expected result from the graph`s `shortestPath` function is a `Path` value that is generic over the node type of the graph. It is implemented as a `class`-based linked list, meaning that one segment holds some data and points to the next until it reaches its end.
 
 The public interface of a path has two properties:
 
@@ -87,7 +87,7 @@ print(path.nodeData) // [("A", 0.0), ("B", 20.0)]
 
 This way you can build up the route the way you like to.
 
-The second property is the total distance of the path, which simply adds up the distances from the `nodeData` property.
+The second property is the total distance of the path.
 
 ```
 print(path.totalWeight) // 20.0
