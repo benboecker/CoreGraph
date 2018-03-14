@@ -8,10 +8,12 @@
 
 import Foundation
 
+
 /**
 This class represents the graph used for calculating the shortest path between nodes.
 */
 public class Graph<Element: Hashable> {
+
 	/**
 	Stores the nodes that build the graph as a dictionary for better performance.
 	The nodes are stored as the keys and the edges leading from the nodes are the dictionary values.

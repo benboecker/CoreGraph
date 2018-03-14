@@ -73,7 +73,7 @@ graph.clear()
 ```
 
 ### `Path<Element: Equatable>`
-The expected result from the graph`s `shortestPath` function is a `Path` value that is generic over the node type of the graph. It is implemented as a `class`-based linked list, meaning that one segment holds some data and points to the next until it reaches its end.
+The expected result from the graph's `shortestPath` function is a `Path` value that is generic over the node type of the graph. It is implemented as a `class`-based linked list, meaning that one segment holds some data and points to the next until it reaches its end.
 
 The public interface of a path has two properties:
 
